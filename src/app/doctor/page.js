@@ -75,13 +75,7 @@ export default function DoctorsPage() {
             </p>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-            gap: '38px',
-            maxWidth: '1080px',
-            margin: '0 auto 50px auto'
-          }}>
+          <div className="doctor-redesign-grid" style={{ marginBottom: '50px' }}>
             {doctorsData.map((doc) => (
               <DoctorCard key={doc.id} doctor={doc} onOpenAppointment={openAppointment} />
             ))}

@@ -1456,7 +1456,8 @@ export default function HomePage() {
       <section style={{
         padding: '95px 0',
         background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
         <div className="site-container">
           <div className="section-header">
@@ -1540,7 +1541,8 @@ export default function HomePage() {
       <section style={{
         padding: '95px 0',
         background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }} id="faq-section">
         <div className="site-container">
           <div className="section-header" style={{ maxWidth: '750px', margin: '0 auto 40px auto', textAlign: 'center' }}>

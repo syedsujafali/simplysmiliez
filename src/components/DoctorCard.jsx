@@ -491,14 +491,17 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                   </div>
 
                   {/* Direct Action Row */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr) auto',
-                    gap: '10px',
-                    marginTop: 'auto',
-                    paddingTop: '18px',
-                    borderTop: '1px solid #f1f5f9'
-                  }}>
+                  <div 
+                    className="doctor-modal-actions"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr) auto',
+                      gap: '10px',
+                      marginTop: 'auto',
+                      paddingTop: '18px',
+                      borderTop: '1px solid #f1f5f9'
+                    }}
+                  >
                     <button
                       onClick={() => {
                         setIsModalOpen(false);

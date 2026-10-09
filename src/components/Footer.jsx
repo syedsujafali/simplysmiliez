@@ -46,7 +46,7 @@ export default function Footer() {
         {/* 4-Column Main Footer Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
           gap: '36px',
           marginBottom: '44px'
         }}>
@@ -201,15 +201,15 @@ export default function Footer() {
               <div style={{ display: 'flex', gap: '10px' }}>
                 <Phone size={18} style={{ color: '#38bdf8', flexShrink: 0, marginTop: '2px' }} />
                 <div>
-                  <strong style={{ color: '#ffffff', display: 'block', marginBottom: '2px', fontSize: '0.86rem' }}>
+                  <strong style={{ color: '#ffffff', display: 'block', marginBottom: '4px', fontSize: '0.86rem' }}>
                     Phone Numbers:
                   </strong>
-                  <div>
-                    <a href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                    <a href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
                       {clinicInfo.phones?.[0]?.display || '96033 38904'}
                     </a>
-                    <span style={{ margin: '0 8px', color: '#64748b' }}>|</span>
-                    <a href={`tel:${clinicInfo.phones?.[1]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
+                    <span style={{ color: '#64748b' }}>•</span>
+                    <a href={`tel:${clinicInfo.phones?.[1]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
                       {clinicInfo.phones?.[1]?.display || '77993 76656'}
                     </a>
                   </div>

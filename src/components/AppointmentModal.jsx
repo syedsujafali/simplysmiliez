@@ -167,7 +167,7 @@ export default function AppointmentModal({ isOpen, onClose }) {
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Full Name & Phone Number */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div className="appointment-modal-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: '600', color: 'var(--navy)', marginBottom: '6px' }}>
                     Full Name *
@@ -276,7 +276,7 @@ export default function AppointmentModal({ isOpen, onClose }) {
               </div>
 
               {/* Date & Time */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div className="appointment-modal-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: '600', color: 'var(--navy)', marginBottom: '6px' }}>
                     Preferred Date
@@ -360,6 +360,15 @@ export default function AppointmentModal({ isOpen, onClose }) {
           )}
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 520px) {
+          .appointment-modal-2col {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

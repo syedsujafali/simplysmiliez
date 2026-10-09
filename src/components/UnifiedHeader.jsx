@@ -84,7 +84,10 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           padding: '6px 0',
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
           position: 'relative',
-          zIndex: 50
+          zIndex: 50,
+          overflow: 'hidden',
+          width: '100%',
+          maxWidth: '100vw'
         }}
       >
         <div className="header-topbar-inner" style={{ width: '100%', maxWidth: '100%', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', boxSizing: 'border-box' }}>
@@ -95,13 +98,15 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             gap: '8px',
             color: '#e2e8f0',
             fontSize: '0.78rem',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
           }}>
-            <span className="beacon-dot" />
+            <span className="beacon-dot" style={{ flexShrink: 0 }} />
             <span><strong style={{ color: '#ffffff' }}>Open Today:</strong> {clinicInfo.hours.weekdays}</span>
             <span style={{ color: '#64748b', margin: '0 2px' }}>•</span>
             <span style={{ color: '#94a3b8', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <MapPin size={12} style={{ color: '#38bdf8' }} /> Shaikpet, Hyderabad
+              <MapPin size={12} style={{ color: '#38bdf8', flexShrink: 0 }} /> Shaikpet, Hyderabad
             </span>
           </div>
 
@@ -187,6 +192,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             ? '0 10px 30px -5px rgba(15, 23, 42, 0.12)' 
             : '0 2px 10px rgba(15, 23, 42, 0.04)',
           width: '100%',
+          maxWidth: '100vw',
           transition: 'all 0.3s ease',
           position: 'relative'
         }}
@@ -219,101 +225,103 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             />
             <div 
               style={{ 
-                borderLeft: '2px solid rgba(226, 232, 240, 0.9)', 
-                paddingLeft: '14px',
-                transition: 'border-color 0.3s ease'
-              }} 
-              className="header-logo-tag"
-            >
-              <div style={{ 
-                fontSize: '0.82rem', 
-                fontWeight: '800', 
-                color: 'var(--primary)', 
-                letterSpacing: '0.04em', 
-                textTransform: 'uppercase', 
-                whiteSpace: 'nowrap'
-              }}>
-                Dental &amp; Implants
-              </div>
-              <div style={{ 
-                fontSize: '0.78rem', 
-                color: 'var(--text-muted)', 
-                fontWeight: '600', 
-                whiteSpace: 'nowrap'
-              }}>
-                Shaikpet, Hyderabad
-              </div>
-            </div>
-          </Link>
-
-            {/* Desktop Navigation Links */}
-            <nav className="desktop-nav-menu" style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              flexShrink: 0
+              borderLeft: '2px solid rgba(226, 232, 240, 0.9)', 
+              paddingLeft: '14px',
+              transition: 'border-color 0.3s ease'
+            }} 
+            className="header-logo-tag"
+          >
+            <div style={{ 
+              fontSize: '0.82rem', 
+              fontWeight: '800', 
+              color: 'var(--primary)', 
+              letterSpacing: '0.04em', 
+              textTransform: 'uppercase', 
+              whiteSpace: 'nowrap'
             }}>
-              {navLinks.map((link, idx) => {
-                if (link.isDropdown) {
-                  return (
-                    <div
-                      key={idx}
-                      style={{ position: 'relative' }}
-                      onMouseEnter={() => setDropdownOpen(true)}
-                      onMouseLeave={() => setDropdownOpen(false)}
-                    >
-                      <button
-                        onClick={() => setDropdownOpen(!dropdownOpen)}
-                        style={{
-                          background: isSpecialityActive ? 'var(--primary-light)' : 'transparent',
-                          border: 'none',
-                          color: isSpecialityActive ? 'var(--primary)' : 'var(--navy)',
-                          fontWeight: '700',
-                          fontSize: '0.92rem',
-                          padding: '10px 14px',
-                          borderRadius: '12px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          whiteSpace: 'nowrap',
-                          transition: 'all 0.25s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.color = 'var(--primary)';
-                          e.currentTarget.style.backgroundColor = 'rgba(2, 132, 199, 0.08)';
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isSpecialityActive) {
-                            e.currentTarget.style.color = 'var(--navy)';
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                          }
-                        }}
-                      >
-                        Specialities
-                        <ChevronDown size={14} style={{
-                          transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                          transition: 'transform 0.25s ease'
-                        }} />
-                      </button>
+              Dental &amp; Implants
+            </div>
+            <div style={{ 
+              fontSize: '0.78rem', 
+              color: 'var(--text-muted)', 
+              fontWeight: '600', 
+              whiteSpace: 'nowrap'
+            }}>
+              Shaikpet, Hyderabad
+            </div>
+          </div>
+        </Link>
 
-                      {/* Mega Dropdown Menu */}
-                      {dropdownOpen && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '100%',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          width: '660px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                          backdropFilter: 'blur(28px)',
-                          borderRadius: '24px',
-                          boxShadow: '0 24px 60px rgba(15, 23, 42, 0.22)',
-                          padding: '24px',
-                          zIndex: 200,
-                          border: '1.5px solid rgba(2, 132, 199, 0.2)',
-                          animation: 'fadeIn 0.2s ease-out'
-                        }}>
+          {/* Desktop Navigation Links */}
+          <nav className="desktop-nav-menu" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            flexShrink: 0
+          }}>
+            {navLinks.map((link, idx) => {
+              if (link.isDropdown) {
+                return (
+                  <div
+                    key={idx}
+                    style={{ position: 'relative' }}
+                    onMouseEnter={() => setDropdownOpen(true)}
+                    onMouseLeave={() => setDropdownOpen(false)}
+                  >
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      style={{
+                        background: isSpecialityActive ? 'var(--primary-light)' : 'transparent',
+                        border: 'none',
+                        color: isSpecialityActive ? 'var(--primary)' : 'var(--navy)',
+                        fontWeight: '700',
+                        fontSize: '0.92rem',
+                        padding: '10px 14px',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        whiteSpace: 'nowrap',
+                        transition: 'all 0.25s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--primary)';
+                        e.currentTarget.style.backgroundColor = 'rgba(2, 132, 199, 0.08)';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSpecialityActive) {
+                          e.currentTarget.style.color = 'var(--navy)';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
+                    >
+                      Specialities
+                      <ChevronDown size={14} style={{
+                        transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.25s ease'
+                      }} />
+                    </button>
+
+                    {/* Mega Dropdown Menu */}
+                    {dropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '660px',
+                        maxWidth: 'calc(100vw - 32px)',
+                        boxSizing: 'border-box',
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        backdropFilter: 'blur(28px)',
+                        borderRadius: '24px',
+                        boxShadow: '0 24px 60px rgba(15, 23, 42, 0.22)',
+                        padding: '24px',
+                        zIndex: 200,
+                        border: '1.5px solid rgba(2, 132, 199, 0.2)',
+                        animation: 'fadeIn 0.2s ease-out'
+                      }}>
                           <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -730,29 +738,32 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             display: flex !important;
           }
         }
+        @media (max-width: 900px) {
+          .header-promo-callout {
+            display: none !important;
+          }
+        }
         @media (max-width: 768px) {
           .header-top-contacts {
             display: none !important;
           }
         }
-        @media (max-width: 640px) {
-          .header-promo-callout {
-            display: none !important;
-          }
-        }
         @media (max-width: 480px) {
           .header-topbar-inner {
-            padding: 0 14px !important;
+            padding: 0 12px !important;
           }
           .header-navbar-inner {
-            padding: 8px 14px !important;
-            min-height: 62px !important;
+            padding: 8px 12px !important;
+            min-height: 60px !important;
           }
           .header-brand-logo {
-            height: 42px !important;
+            height: 40px !important;
           }
           .header-book-btn {
-            padding: 8px 14px !important;
+            padding: 7px 12px !important;
+            font-size: 0.8rem !important;
+          }
+        }
             font-size: 0.82rem !important;
           }
         }

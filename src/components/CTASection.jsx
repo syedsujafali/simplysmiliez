@@ -36,10 +36,10 @@ export default function CTASection({ onOpenAppointment }) {
       <div className="site-container" style={{ position: 'relative', zIndex: 2 }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           alignItems: 'center',
-          gap: '48px'
-        }}>
+          gap: '40px'
+        }} className="cta-responsive-grid">
           {/* Left Text Block */}
           <div>
             <div style={{
@@ -109,14 +109,19 @@ export default function CTASection({ onOpenAppointment }) {
           </div>
 
           {/* Right Action Card */}
-          <div style={{
-            backgroundColor: 'rgba(7, 21, 41, 0.75)',
-            border: '1px solid rgba(0, 180, 216, 0.25)',
-            padding: '38px',
-            borderRadius: '24px',
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(16px)'
-          }}>
+          <div 
+            className="cta-action-card"
+            style={{
+              backgroundColor: 'rgba(7, 21, 41, 0.75)',
+              border: '1px solid rgba(0, 180, 216, 0.25)',
+              padding: '36px',
+              borderRadius: '24px',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.4)',
+              backdropFilter: 'blur(16px)',
+              width: '100%',
+              boxSizing: 'border-box'
+            }}
+          >
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -160,6 +165,15 @@ export default function CTASection({ onOpenAppointment }) {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .cta-action-card {
+            padding: 22px 18px !important;
+            border-radius: 20px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
