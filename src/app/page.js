@@ -7,6 +7,7 @@ import { doctorsData } from '@/data/doctorsData';
 import { mainFaqs } from '@/data/faqsData';
 import { useUI } from '@/components/LayoutWrapper';
 import ServiceCard from '@/components/ServiceCard';
+import MobileServicesSlider from '@/components/MobileServicesSlider';
 import DoctorCard from '@/components/DoctorCard';
 import GalleryViewer from '@/components/GalleryViewer';
 import TestimonialSlider from '@/components/TestimonialSlider';
@@ -823,11 +824,16 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Grid of 6 Featured Services: Exactly 2 Rows and 3 Columns */}
+          {/* Grid of 6 Featured Services: Exactly 2 Rows and 3 Columns (Desktop & Tablet) */}
           <div className="services-2x3-grid" style={{ marginBottom: '50px' }}>
             {featuredServices.map((service, idx) => (
               <ServiceCard key={service.slug} service={service} index={idx} />
             ))}
+          </div>
+
+          {/* Mobile Only: Touch-Friendly Featured Services Carousel Slider */}
+          <div style={{ marginBottom: '40px' }}>
+            <MobileServicesSlider services={featuredServices} />
           </div>
 
           {/* Bottom Action Button */}

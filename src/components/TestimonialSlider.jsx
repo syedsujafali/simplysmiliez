@@ -93,26 +93,32 @@ export default function TestimonialSlider() {
     <div style={{ width: '100%', position: 'relative' }}>
       
       {/* Top Controls & Rating Summary Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '16px',
-        marginBottom: '28px',
-        padding: '0 4px'
-      }}>
-        {/* Google Rating Trust Badge */}
-        <div style={{
-          display: 'inline-flex',
+      <div 
+        className="testimonial-controls-bar"
+        style={{
+          display: 'flex',
           alignItems: 'center',
-          gap: '12px',
-          backgroundColor: '#ffffff',
-          padding: '8px 18px',
-          borderRadius: '9999px',
-          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.05)',
-          border: '1px solid rgba(226, 232, 240, 0.9)'
-        }}>
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '16px',
+          marginBottom: '28px',
+          padding: '0 4px'
+        }}
+      >
+        {/* Google Rating Trust Badge */}
+        <div 
+          className="testimonial-trust-badge"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            backgroundColor: '#ffffff',
+            padding: '8px 18px',
+            borderRadius: '9999px',
+            boxShadow: '0 4px 14px rgba(15, 23, 42, 0.05)',
+            border: '1px solid rgba(226, 232, 240, 0.9)'
+          }}
+        >
           <div style={{ display: 'flex', gap: '3px' }}>
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={15} fill="#f59e0b" color="#f59e0b" />

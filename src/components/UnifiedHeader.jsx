@@ -517,40 +517,41 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </nav>
 
             {/* Quick Actions Group - Clean Book Visit CTA */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+            <div className="header-actions-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               {/* Book Visit CTA */}
               <button
                 onClick={onOpenAppointment}
                 className="btn btn-primary header-book-btn"
                 style={{
-                  padding: isScrolled ? '10px 22px' : '12px 24px',
-                  fontSize: '0.94rem',
+                  padding: isScrolled ? '9px 18px' : '11px 22px',
+                  fontSize: '0.92rem',
                   whiteSpace: 'nowrap',
                   boxShadow: '0 6px 20px rgba(2, 132, 199, 0.38)',
                   transition: 'all 0.3s ease'
                 }}
               >
-                <Calendar size={16} />
-                <span>Book Visit</span>
+                <Calendar size={15} style={{ flexShrink: 0 }} />
+                <span className="book-btn-text-full">Book Visit</span>
+                <span className="book-btn-text-short">Book</span>
               </button>
 
               {/* Mobile Menu Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="mobile-toggle-btn"
+                aria-label="Toggle Menu"
                 style={{
-                  display: 'none',
                   background: 'rgba(2, 132, 199, 0.1)',
                   border: '1px solid var(--border-subtle)',
                   color: 'var(--navy)',
                   cursor: 'pointer',
-                  padding: '9px',
+                  padding: '8px',
                   borderRadius: '10px',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  flexShrink: 0
                 }}
-                className="mobile-toggle-btn"
-                aria-label="Toggle Menu"
               >
-                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
           </div>
@@ -558,18 +559,25 @@ export default function UnifiedHeader({ onOpenAppointment }) {
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.98)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '2px solid #e2e8f0',
-          padding: '20px',
-          maxHeight: 'calc(100vh - 120px)',
-          overflowY: 'auto',
-          boxShadow: '0 20px 40px rgba(15, 23, 42, 0.15)'
-        }}>
+        <div 
+          className="mobile-nav-drawer"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.99)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderBottom: '2px solid #e2e8f0',
+            padding: '16px',
+            maxHeight: 'calc(100vh - 100px)',
+            overflowY: 'auto',
+            boxShadow: '0 20px 40px rgba(15, 23, 42, 0.2)',
+            width: '100%',
+            boxSizing: 'border-box'
+          }}
+        >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <Link
               href="/"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -583,6 +591,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </Link>
             <Link
               href="/about"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/about' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -619,7 +628,11 @@ export default function UnifiedHeader({ onOpenAppointment }) {
                 }}>
                   Dental Treatments
                 </span>
-                <Link href="/all-services" style={{ color: 'var(--navy)', fontSize: '0.78rem', fontWeight: '700' }}>
+                <Link 
+                  href="/all-services" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{ color: 'var(--navy)', fontSize: '0.78rem', fontWeight: '700' }}
+                >
                   View All &rarr;
                 </Link>
               </div>
@@ -628,6 +641,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
                   <Link
                     key={sIdx}
                     href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
                     style={{
                       color: pathname === item.href ? 'var(--primary)' : 'var(--text-body)',
                       fontSize: '0.85rem',
@@ -651,6 +665,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
 
             <Link
               href="/doctor"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/doctor' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -663,6 +678,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </Link>
             <Link
               href="/gallery"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/gallery' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -675,6 +691,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </Link>
             <Link
               href="/testimonal"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/testimonal' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -687,6 +704,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </Link>
             <Link
               href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
               style={{
                 color: pathname === '/contact' ? 'var(--primary)' : 'var(--navy)',
                 fontWeight: '700',
@@ -725,6 +743,9 @@ export default function UnifiedHeader({ onOpenAppointment }) {
       )}
 
       <style jsx>{`
+        .book-btn-text-short {
+          display: none;
+        }
         @media (max-width: 1200px) {
           .header-logo-tag {
             display: none !important;
@@ -736,6 +757,8 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           }
           .mobile-toggle-btn {
             display: flex !important;
+            align-items: center;
+            justify-content: center;
           }
         }
         @media (max-width: 900px) {
@@ -750,21 +773,58 @@ export default function UnifiedHeader({ onOpenAppointment }) {
         }
         @media (max-width: 480px) {
           .header-topbar-inner {
-            padding: 0 12px !important;
+            padding: 0 10px !important;
           }
           .header-navbar-inner {
-            padding: 8px 12px !important;
-            min-height: 60px !important;
+            padding: 8px 10px !important;
+            min-height: 58px !important;
+            gap: 8px !important;
           }
           .header-brand-logo {
-            height: 40px !important;
+            height: 38px !important;
+            max-width: 110px !important;
           }
           .header-book-btn {
-            padding: 7px 12px !important;
+            padding: 7px 11px !important;
             font-size: 0.8rem !important;
           }
+          .mobile-toggle-btn {
+            width: 36px !important;
+            height: 36px !important;
+          }
         }
-            font-size: 0.82rem !important;
+        @media (max-width: 360px) {
+          .header-topbar-inner {
+            padding: 0 6px !important;
+          }
+          .header-navbar-inner {
+            padding: 6px 6px !important;
+            min-height: 52px !important;
+            gap: 4px !important;
+          }
+          .header-brand-logo {
+            height: 32px !important;
+            max-width: 90px !important;
+          }
+          .header-actions-group {
+            gap: 5px !important;
+          }
+          .header-book-btn {
+            padding: 5px 8px !important;
+            font-size: 0.72rem !important;
+            gap: 3px !important;
+          }
+          .book-btn-text-full {
+            display: none !important;
+          }
+          .book-btn-text-short {
+            display: inline !important;
+          }
+          .mobile-toggle-btn {
+            width: 34px !important;
+            height: 34px !important;
+            min-width: 34px !important;
+            padding: 0 !important;
           }
         }
       `}</style>

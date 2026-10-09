@@ -1359,6 +1359,140 @@ button, input, select, textarea {
   }
 }
 
+/* ========================================================= */
+/* HEADER RESPONSIVE & MOBILE S (320px) COMPATIBILITY */
+/* ========================================================= */
+.mobile-toggle-btn {
+  display: none;
+}
+
+.book-btn-text-short {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .header-logo-tag {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1040px) {
+  .desktop-nav-menu {
+    display: none !important;
+  }
+  .mobile-toggle-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .header-promo-callout {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-top-contacts {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-topbar-inner {
+    padding: 0 10px !important;
+  }
+  .header-navbar-inner {
+    padding: 8px 10px !important;
+    min-height: 58px !important;
+    gap: 8px !important;
+  }
+  .header-brand-logo {
+    height: 38px !important;
+    max-width: 110px !important;
+  }
+  .header-book-btn {
+    padding: 7px 11px !important;
+    font-size: 0.8rem !important;
+  }
+  .mobile-toggle-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* Specific optimizations for Mobile S (320px) */
+@media (max-width: 360px) {
+  .header-topbar-inner {
+    padding: 0 6px !important;
+  }
+  .header-navbar-inner {
+    padding: 6px 6px !important;
+    min-height: 52px !important;
+    gap: 4px !important;
+  }
+  .header-brand-logo {
+    height: 32px !important;
+    max-width: 88px !important;
+  }
+  .header-actions-group {
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+  .header-book-btn {
+    padding: 5px 8px !important;
+    font-size: 0.72rem !important;
+    gap: 3px !important;
+  }
+  .book-btn-text-full {
+    display: none !important;
+  }
+  .book-btn-text-short {
+    display: inline !important;
+  }
+  .mobile-toggle-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    display: flex !important;
+  }
+}
+
+/* ========================================================= */
+/* FEATURED SERVICES MOBILE SLIDER (MOBILE ONLY) */
+/* ========================================================= */
+.mobile-services-slider-container {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .services-2x3-grid {
+    display: none !important;
+  }
+  .mobile-services-slider-container {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+/* ========================================================= */
+/* TESTIMONIAL SECTION MOBILE CLEANUP (MOBILE ONLY) */
+/* ========================================================= */
+@media (max-width: 768px) {
+  .testimonial-trust-badge {
+    display: none !important;
+  }
+  .testimonial-controls-bar {
+    justify-content: center !important;
+    margin-bottom: 20px !important;
+  }
+}
+
+
 
 
 
