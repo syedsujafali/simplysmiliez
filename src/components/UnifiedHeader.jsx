@@ -91,16 +91,14 @@ export default function UnifiedHeader({ onOpenAppointment }) {
         }}
       >
         <div className="header-topbar-inner" style={{ width: '100%', maxWidth: '100%', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', boxSizing: 'border-box' }}>
-          {/* Clinic Timings & Location */}
-          <div style={{
+          {/* Clinic Timings & Location (Desktop) */}
+          <div className="header-topbar-desktop-info" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
             color: '#e2e8f0',
             fontSize: '0.78rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            whiteSpace: 'nowrap'
           }}>
             <span className="beacon-dot" style={{ flexShrink: 0 }} />
             <span><strong style={{ color: '#ffffff' }}>Open Today:</strong> {clinicInfo.hours.weekdays}</span>
@@ -108,6 +106,35 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             <span style={{ color: '#94a3b8', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               <MapPin size={12} style={{ color: '#38bdf8', flexShrink: 0 }} /> Shaikpet, Hyderabad
             </span>
+          </div>
+
+          {/* Clinic Timings & Call CTA (Mobile - Perfectly Sized & Centered) */}
+          <div className="header-topbar-mobile-info" style={{
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            width: '100%',
+            textAlign: 'center',
+            fontSize: '0.74rem',
+            color: '#e2e8f0'
+          }}>
+            <span className="beacon-dot" style={{ flexShrink: 0 }} />
+            <span><strong style={{ color: '#ffffff' }}>Open Today:</strong> 10am - 9pm</span>
+            <span style={{ color: '#64748b' }}>•</span>
+            <a
+              href={`tel:${clinicInfo.phones[0].value}`}
+              style={{
+                color: '#38bdf8',
+                fontWeight: '700',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '3px',
+                textDecoration: 'none'
+              }}
+            >
+              <Phone size={11} style={{ flexShrink: 0 }} /> {clinicInfo.phones[0].display}
+            </a>
           </div>
 
           {/* 30% Off Discount Callout */}

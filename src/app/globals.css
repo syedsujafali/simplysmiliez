@@ -1366,6 +1366,10 @@ button, input, select, textarea {
   display: none;
 }
 
+.header-topbar-mobile-info {
+  display: none !important;
+}
+
 .book-btn-text-short {
   display: none;
 }
@@ -1378,6 +1382,9 @@ button, input, select, textarea {
 
 @media (max-width: 1040px) {
   .desktop-nav-menu {
+    display: none !important;
+  }
+  .header-book-btn {
     display: none !important;
   }
   .mobile-toggle-btn {
@@ -1394,31 +1401,46 @@ button, input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  .header-topbar-desktop-info {
+    display: none !important;
+  }
+  .header-promo-callout {
+    display: none !important;
+  }
   .header-top-contacts {
+    display: none !important;
+  }
+  .header-topbar-mobile-info {
+    display: flex !important;
+  }
+  .header-topbar-inner {
+    justify-content: center !important;
+    padding: 0 10px !important;
+  }
+  .header-book-btn {
     display: none !important;
   }
 }
 
 @media (max-width: 480px) {
   .header-topbar-inner {
-    padding: 0 10px !important;
+    padding: 0 8px !important;
   }
   .header-navbar-inner {
-    padding: 8px 10px !important;
+    padding: 8px 12px !important;
     min-height: 58px !important;
     gap: 8px !important;
   }
   .header-brand-logo {
-    height: 38px !important;
-    max-width: 110px !important;
+    height: 40px !important;
+    max-width: 130px !important;
   }
   .header-book-btn {
-    padding: 7px 11px !important;
-    font-size: 0.8rem !important;
+    display: none !important;
   }
   .mobile-toggle-btn {
-    width: 36px !important;
-    height: 36px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
 }
 
@@ -1428,33 +1450,25 @@ button, input, select, textarea {
     padding: 0 6px !important;
   }
   .header-navbar-inner {
-    padding: 6px 6px !important;
+    padding: 6px 10px !important;
     min-height: 52px !important;
-    gap: 4px !important;
+    gap: 6px !important;
   }
   .header-brand-logo {
-    height: 32px !important;
-    max-width: 88px !important;
+    height: 34px !important;
+    max-width: 110px !important;
   }
   .header-actions-group {
-    gap: 5px !important;
+    gap: 0 !important;
     flex-shrink: 0 !important;
   }
   .header-book-btn {
-    padding: 5px 8px !important;
-    font-size: 0.72rem !important;
-    gap: 3px !important;
-  }
-  .book-btn-text-full {
     display: none !important;
   }
-  .book-btn-text-short {
-    display: inline !important;
-  }
   .mobile-toggle-btn {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
     padding: 0 !important;
     display: flex !important;
   }
