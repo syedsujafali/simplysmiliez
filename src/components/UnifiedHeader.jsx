@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clinicInfo } from '@/data/clinicData';
@@ -20,6 +20,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const headerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,11 +30,39 @@ export default function UnifiedHeader({ onOpenAppointment }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Set --mobile-header-offset to actual header height so drawer is pinned correctly
+  useEffect(() => {
+    const updateOffset = () => {
+      if (headerRef.current) {
+        const h = headerRef.current.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--mobile-header-offset', `${h}px`);
+      }
+    };
+    updateOffset();
+    window.addEventListener('resize', updateOffset);
+    return () => window.removeEventListener('resize', updateOffset);
+  }, [isScrolled]);
+
   // Close menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownOpen(false);
   }, [pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [mobileMenuOpen]);
 
   const specialitiesCol1 = [
     { title: 'Invisalign & Braces', href: '/braces', desc: 'Invisible aligners & orthodontic smile correction', badge: '30% Off' },
@@ -66,10 +95,11 @@ export default function UnifiedHeader({ onOpenAppointment }) {
   const isSpecialityActive = allSpecialities.some(s => pathname === s.href) || pathname === '/all-services';
 
   return (
-    <header style={{
+    <>
+    <header ref={headerRef} style={{
       position: 'sticky',
       top: 0,
-      zIndex: 100,
+      zIndex: 1000,
       width: '100%',
       transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
     }}>
@@ -85,7 +115,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
           position: 'relative',
           zIndex: 50,
-          overflow: 'hidden',
+          overflow: 'clip',
           width: '100%',
           maxWidth: '100vw'
         }}
@@ -584,23 +614,44 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           </div>
         </div>
 
-      {/* Mobile Navigation Drawer */}
+      </header>
+
+      {/* Mobile Navigation Drawer – fixed, below sticky header */}
       {mobileMenuOpen && (
-        <div 
-          className="mobile-nav-drawer"
-          style={{
-            backgroundColor: 'rgba(255, 255, 255, 0.99)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            borderBottom: '2px solid #e2e8f0',
-            padding: '16px',
-            maxHeight: 'calc(100vh - 100px)',
-            overflowY: 'auto',
-            boxShadow: '0 20px 40px rgba(15, 23, 42, 0.2)',
-            width: '100%',
-            boxSizing: 'border-box'
-          }}
-        >
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(7, 21, 41, 0.45)',
+              backdropFilter: 'blur(2px)',
+              zIndex: 998
+            }}
+          />
+          <div 
+            className="mobile-nav-drawer"
+            style={{
+              position: 'fixed',
+              top: 'var(--mobile-header-offset, 0px)',
+              left: 0,
+              right: 0,
+              backgroundColor: 'rgba(255, 255, 255, 0.99)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              borderBottom: '2px solid #e2e8f0',
+              padding: '16px 16px 32px',
+              maxHeight: 'calc(100dvh - var(--mobile-header-offset, 0px))',
+              overflowY: 'auto',
+              overscrollBehavior: 'contain',
+              WebkitOverflowScrolling: 'touch',
+              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.25)',
+              width: '100%',
+              boxSizing: 'border-box',
+              zIndex: 999
+            }}
+          >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <Link
               href="/"
@@ -767,6 +818,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             </a>
           </div>
         </div>
+        </>
       )}
 
       <style jsx>{`
@@ -799,25 +851,27 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           }
         }
         @media (max-width: 480px) {
+          :root {
+            --mobile-header-offset: 112px;
+          }
           .header-topbar-inner {
-            padding: 0 10px !important;
+            padding: 0 8px !important;
           }
           .header-navbar-inner {
-            padding: 8px 10px !important;
-            min-height: 58px !important;
+            padding: 8px 14px !important;
+            min-height: 64px !important;
             gap: 8px !important;
           }
           .header-brand-logo {
-            height: 38px !important;
-            max-width: 110px !important;
+            height: 48px !important;
+            max-width: 180px !important;
           }
           .header-book-btn {
-            padding: 7px 11px !important;
-            font-size: 0.8rem !important;
+            display: none !important;
           }
           .mobile-toggle-btn {
-            width: 36px !important;
-            height: 36px !important;
+            width: 38px !important;
+            height: 38px !important;
           }
         }
         @media (max-width: 360px) {
@@ -825,36 +879,30 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             padding: 0 6px !important;
           }
           .header-navbar-inner {
-            padding: 6px 6px !important;
-            min-height: 52px !important;
-            gap: 4px !important;
+            padding: 6px 10px !important;
+            min-height: 58px !important;
+            gap: 6px !important;
           }
           .header-brand-logo {
-            height: 32px !important;
-            max-width: 90px !important;
+            height: 42px !important;
+            max-width: 160px !important;
           }
           .header-actions-group {
-            gap: 5px !important;
+            gap: 0 !important;
+            flex-shrink: 0 !important;
           }
           .header-book-btn {
-            padding: 5px 8px !important;
-            font-size: 0.72rem !important;
-            gap: 3px !important;
-          }
-          .book-btn-text-full {
             display: none !important;
           }
-          .book-btn-text-short {
-            display: inline !important;
-          }
           .mobile-toggle-btn {
-            width: 34px !important;
-            height: 34px !important;
-            min-width: 34px !important;
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
             padding: 0 !important;
+            display: flex !important;
           }
         }
       `}</style>
-    </header>
+    </>
   );
 }
