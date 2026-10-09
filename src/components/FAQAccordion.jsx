@@ -86,12 +86,7 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
 
           {/* Quick Category Filter Pills */}
           {categories.length > 2 && (
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px',
-              justifyContent: 'center'
-            }}>
+            <div className="faq-category-pills-wrap">
               {categories.map((cat, idx) => {
                 const isActive = selectedCategory === cat;
                 return (

@@ -1029,18 +1029,301 @@ button, input, select, textarea {
   border-color: rgba(2, 132, 199, 0.3);
 }
 
-@media (max-width: 1024px) {
-  .testimonial-card-slide {
-    flex: 0 0 calc((100% - 20px) / 1.55);
+/* ========================================================= */
+/* COMPLETE MULTI-DEVICE RESPONSIVE DESIGN SYSTEM */
+/* ========================================================= */
+
+/* Fluid Typography & Container Adjustments */
+@media (max-width: 1200px) {
+  .site-container {
+    padding: 0 20px;
   }
 }
 
-@media (max-width: 640px) {
-  .testimonial-card-slide {
-    flex: 0 0 calc(100% - 36px);
-    padding: 24px 20px;
+@media (max-width: 768px) {
+  .site-container {
+    padding: 0 16px;
+  }
+  
+  .section-header {
+    margin-bottom: 36px !important;
+  }
+  
+  .section-header .section-title {
+    font-size: clamp(1.85rem, 5vw, 2.35rem) !important;
+  }
+  
+  .section-header .section-desc {
+    font-size: 0.98rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  .btn-lg {
+    padding: 13px 26px !important;
+    font-size: 0.95rem !important;
   }
 }
+
+@media (max-width: 480px) {
+  .site-container {
+    padding: 0 12px;
+  }
+  
+  .section-header .section-title {
+    font-size: 1.7rem !important;
+    line-height: 1.22 !important;
+  }
+  
+  .section-header .section-tag {
+    font-size: 0.74rem !important;
+    padding: 5px 12px !important;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .btn-sm {
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ========================================================= */
+/* HERO SLIDER RESPONSIVENESS */
+/* ========================================================= */
+.hero-slider-main-box {
+  position: relative;
+  min-height: 680px;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  background-color: #091322;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.25);
+}
+
+.hero-slider-content-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 100px 48px 85px 48px;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  justifyContent: center;
+  align-items: flex-end;
+  box-sizing: border-box;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.3rem) !important;
+  line-height: 1.15 !important;
+}
+
+@media (max-width: 1024px) {
+  .hero-slider-main-box {
+    min-height: 600px;
+  }
+  .hero-slider-content-wrap {
+    min-height: 600px;
+    padding: 85px 32px 75px 32px;
+    align-items: flex-start;
+  }
+  .hero-slider-content-wrap > div {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-slider-main-box {
+    min-height: 520px;
+  }
+  .hero-slider-content-wrap {
+    min-height: 520px;
+    padding: 65px 20px 65px 20px;
+    align-items: flex-start;
+  }
+  .animate-hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px !important;
+  }
+  .animate-hero-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .animate-hero-trust {
+    gap: 14px !important;
+    padding-top: 16px !important;
+  }
+  .animate-hero-nav {
+    right: 20px !important;
+    bottom: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-slider-main-box {
+    min-height: 480px;
+  }
+  .hero-slider-content-wrap {
+    min-height: 480px;
+    padding: 50px 14px 60px 14px;
+  }
+  .animate-hero-badge {
+    font-size: 0.72rem !important;
+    padding: 4px 10px !important;
+  }
+  .animate-hero-desc {
+    font-size: 0.96rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 20px !important;
+  }
+}
+
+/* ========================================================= */
+/* ABOUT SECTION & FEATURES GRID */
+/* ========================================================= */
+.about-features-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.about-image-card {
+  position: relative;
+  border-radius: 28px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(16, 185, 129, 0.2) 100%);
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.18);
+}
+
+.about-image-card img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  display: block;
+  border-radius: 20px;
+}
+
+.about-floating-pill {
+  position: absolute;
+  top: -16px;
+  left: -16px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e0f2fe;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .about-features-2col {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .about-image-card img {
+    height: 320px;
+  }
+  .about-floating-pill {
+    top: 12px;
+    left: 12px;
+    padding: 8px 14px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-image-card img {
+    height: 250px;
+  }
+}
+
+/* ========================================================= */
+/* WHY CHOOSE US & SPOTLIGHT CARD */
+/* ========================================================= */
+.why-spotlight-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 480px) {
+  .why-spotlight-stats-grid {
+    gap: 10px;
+  }
+  .why-spotlight-stats-grid > div {
+    padding: 12px !important;
+  }
+  .why-spotlight-stats-grid div:first-child {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* ========================================================= */
+/* DOCTOR MODAL & PROFILE CARDS */
+/* ========================================================= */
+@media (max-width: 640px) {
+  .doctor-image-wrapper {
+    height: 280px !important;
+  }
+  .doctor-card-modern {
+    border-radius: 20px !important;
+  }
+  .doctor-modal-content {
+    border-radius: 20px !important;
+    margin: 10px !important;
+    max-height: 94vh !important;
+  }
+}
+
+/* ========================================================= */
+/* FAQ ACCORDION MOBILE TOUCH PILLS */
+/* ========================================================= */
+.faq-category-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .faq-category-pills-wrap {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .faq-category-pills-wrap::-webkit-scrollbar {
+    display: none;
+  }
+  .faq-category-pills-wrap button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* ========================================================= */
+/* CONTACT PAGE RESPONSIVENESS */
+/* ========================================================= */
+@media (max-width: 768px) {
+  .contact-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 
 
 

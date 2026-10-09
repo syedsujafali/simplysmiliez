@@ -285,8 +285,8 @@ export default function AllServicesPage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '28px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px'
           }}>
             {directories.map((dir, idx) => (
               <div

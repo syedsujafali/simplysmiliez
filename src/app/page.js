@@ -123,16 +123,7 @@ export default function HomePage() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        <div style={{
-          position: 'relative',
-          minHeight: '715px',
-          width: '100%',
-          borderRadius: '0',
-          overflow: 'hidden',
-          backgroundColor: '#091322',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.25)'
-        }}>
+        <div className="hero-slider-main-box">
           {/* Background Slide Images with Crossfade */}
           {heroSlides.map((slide, index) => {
             const isActive = index === currentSlide;
@@ -178,20 +169,7 @@ export default function HomePage() {
           })}
 
           {/* Active Slide Content - Positioned on Right-Hand Side */}
-          <div style={{
-            position: 'relative',
-            zIndex: 10,
-            width: '100%',
-            maxWidth: '1680px',
-            margin: '0 auto',
-            padding: '112px 48px 90px 48px',
-            minHeight: '715px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            boxSizing: 'border-box'
-          }} className="hero-slider-content-wrap">
+          <div className="hero-slider-content-wrap">
             <div style={{
               maxWidth: '780px',
               width: '100%',
@@ -538,12 +516,7 @@ export default function HomePage() {
               </p>
 
               {/* 4 Feature Cards */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '16px',
-                marginBottom: '28px'
-              }}>
+              <div className="about-features-2col">
                 <div style={{
                   padding: '16px 18px',
                   backgroundColor: '#f8fafc',
@@ -720,13 +693,7 @@ export default function HomePage() {
             {/* Right Image Showcase Card (Position Changed to Right) */}
             <div style={{ position: 'relative' }}>
               {/* Outer Decorative Glow Container */}
-              <div style={{
-                position: 'relative',
-                borderRadius: '28px',
-                padding: '12px',
-                background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(16, 185, 129, 0.2) 100%)',
-                boxShadow: '0 25px 60px -15px rgba(15, 23, 42, 0.18)'
-              }}>
+              <div className="about-image-card">
                 <div style={{
                   borderRadius: '20px',
                   overflow: 'hidden',
@@ -737,10 +704,6 @@ export default function HomePage() {
                     src="/images/bg_3.webp"
                     alt="Happy Patient at Simply Smilez Dental Clinic Shaikpet"
                     style={{
-                      width: '100%',
-                      height: '480px',
-                      objectFit: 'cover',
-                      display: 'block',
                       transition: 'transform 0.6s ease'
                     }}
                   />
@@ -769,21 +732,8 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Floating Top-Left Rating Pill */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-16px',
-                  left: '-16px',
-                  backgroundColor: '#ffffff',
-                  borderRadius: '16px',
-                  padding: '12px 18px',
-                  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.12)',
-                  border: '1px solid #e0f2fe',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  zIndex: 10
-                }}>
+                {/* Floating Rating Pill */}
+                <div className="about-floating-pill">
                   <div style={{
                     width: '36px',
                     height: '36px',
@@ -1025,12 +975,7 @@ export default function HomePage() {
                 </p>
 
                 {/* 4 Stats Grid */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '14px',
-                  marginBottom: '32px'
-                }}>
+                <div className="why-spotlight-stats-grid">
                   <div style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.05)',
                     border: '1px solid rgba(255, 255, 255, 0.1)',

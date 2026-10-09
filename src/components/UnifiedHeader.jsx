@@ -87,7 +87,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           zIndex: 50
         }}
       >
-        <div style={{ width: '100%', maxWidth: '100%', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', boxSizing: 'border-box' }}>
+        <div className="header-topbar-inner" style={{ width: '100%', maxWidth: '100%', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', boxSizing: 'border-box' }}>
           {/* Clinic Timings & Location */}
           <div style={{
             display: 'flex',
@@ -106,7 +106,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           </div>
 
           {/* 30% Off Discount Callout */}
-          <div style={{
+          <div className="header-promo-callout" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
@@ -191,7 +191,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
           position: 'relative'
         }}
       >
-        <div style={{
+        <div className="header-navbar-inner" style={{
           width: '100%',
           maxWidth: '1680px',
           margin: '0 auto',
@@ -209,6 +209,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             <img
               src="/images/logo-3.webp"
               alt={clinicInfo.name}
+              className="header-brand-logo"
               style={{
                 height: isScrolled ? '56px' : '64px',
                 width: 'auto',
@@ -512,7 +513,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
               {/* Book Visit CTA */}
               <button
                 onClick={onOpenAppointment}
-                className="btn btn-primary"
+                className="btn btn-primary header-book-btn"
                 style={{
                   padding: isScrolled ? '10px 22px' : '12px 24px',
                   fontSize: '0.94rem',
@@ -732,6 +733,27 @@ export default function UnifiedHeader({ onOpenAppointment }) {
         @media (max-width: 768px) {
           .header-top-contacts {
             display: none !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .header-promo-callout {
+            display: none !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .header-topbar-inner {
+            padding: 0 14px !important;
+          }
+          .header-navbar-inner {
+            padding: 8px 14px !important;
+            min-height: 62px !important;
+          }
+          .header-brand-logo {
+            height: 42px !important;
+          }
+          .header-book-btn {
+            padding: 8px 14px !important;
+            font-size: 0.82rem !important;
           }
         }
       `}</style>

@@ -261,15 +261,15 @@ export default function ContactPage() {
         <div className="site-container">
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-            gap: '44px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '36px',
             alignItems: 'start'
-          }}>
+          }} className="contact-grid-responsive">
             {/* Left Contact & Booking Form */}
             <div style={{
               backgroundColor: '#ffffff',
               borderRadius: '26px',
-              padding: '40px',
+              padding: '32px 28px',
               boxShadow: 'var(--shadow-md)',
               border: '1px solid rgba(226, 232, 240, 0.9)'
             }}>

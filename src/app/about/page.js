@@ -110,10 +110,10 @@ export default function AboutPage() {
         <div className="site-container">
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '54px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '48px',
             alignItems: 'center',
-            marginBottom: '80px'
+            marginBottom: '60px'
           }}>
             <div>
               <span className="badge-pill badge-primary" style={{ marginBottom: '14px' }}>
@@ -172,8 +172,8 @@ export default function AboutPage() {
           {/* Dental Care Designed Around You & Our Commitment */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '30px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '26px',
             marginBottom: '40px'
           }}>
             <div style={{
