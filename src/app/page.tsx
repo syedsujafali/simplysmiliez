@@ -272,13 +272,13 @@ export default function HomePage() {
                   </a>
                 )}
 
-                {heroSlides[currentSlide].phoneCall && (
+                {(heroSlides[currentSlide] as any).phoneCall && (
                   <a
-                    href={`tel:${heroSlides[currentSlide].phoneCall}`}
+                    href={`tel:${(heroSlides[currentSlide] as any).phoneCall}`}
                     className="btn btn-secondary btn-lg"
                     style={{ fontSize: '1rem', padding: '12px 26px' }}
                   >
-                    <Phone size={18} /> {heroSlides[currentSlide].phoneDisplay}
+                    <Phone size={18} /> {(heroSlides[currentSlide] as any).phoneDisplay}
                   </a>
                 )}
               </div>

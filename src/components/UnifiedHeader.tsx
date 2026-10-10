@@ -15,7 +15,11 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-export default function UnifiedHeader({ onOpenAppointment }) {
+interface UnifiedHeaderProps {
+  onOpenAppointment?: (service?: string) => void;
+}
+
+export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,13 +39,19 @@ export default function UnifiedHeader({ onOpenAppointment }) {
     const updateOffset = () => {
       if (headerRef.current) {
         const h = headerRef.current.getBoundingClientRect().height;
-        document.documentElement.style.setProperty('--mobile-header-offset', `${h}px`);
+        if (h > 0) {
+          document.documentElement.style.setProperty('--mobile-header-offset', `${h}px`);
+        }
       }
     };
     updateOffset();
+    const timer = setTimeout(updateOffset, 100);
     window.addEventListener('resize', updateOffset);
-    return () => window.removeEventListener('resize', updateOffset);
-  }, [isScrolled]);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateOffset);
+    };
+  }, [isScrolled, mobileMenuOpen, pathname]);
 
   // Close menus on route change
   useEffect(() => {
@@ -577,7 +587,7 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             <div className="header-actions-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               {/* Book Visit CTA */}
               <button
-                onClick={onOpenAppointment}
+                onClick={() => onOpenAppointment?.()}
                 className="btn btn-primary header-book-btn"
                 style={{
                   padding: isScrolled ? '9px 18px' : '11px 22px',
@@ -594,21 +604,27 @@ export default function UnifiedHeader({ onOpenAppointment }) {
 
               {/* Mobile Menu Toggle Button */}
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMobileMenuOpen((prev) => !prev);
+                }}
                 className="mobile-toggle-btn"
                 aria-label="Toggle Menu"
                 style={{
-                  background: 'rgba(2, 132, 199, 0.1)',
+                  background: 'rgba(2, 132, 199, 0.12)',
                   border: '1px solid var(--border-subtle)',
                   color: 'var(--navy)',
                   cursor: 'pointer',
-                  padding: '8px',
+                  padding: '8px 10px',
                   borderRadius: '10px',
                   transition: 'all 0.3s ease',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  position: 'relative',
+                  zIndex: 10001
                 }}
               >
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
           </div>
@@ -625,16 +641,17 @@ export default function UnifiedHeader({ onOpenAppointment }) {
             style={{
               position: 'fixed',
               inset: 0,
-              backgroundColor: 'rgba(7, 21, 41, 0.45)',
-              backdropFilter: 'blur(2px)',
-              zIndex: 998
+              backgroundColor: 'rgba(7, 21, 41, 0.55)',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
+              zIndex: 9998
             }}
           />
           <div 
             className="mobile-nav-drawer"
             style={{
               position: 'fixed',
-              top: 'var(--mobile-header-offset, 0px)',
+              top: 'var(--mobile-header-offset, 68px)',
               left: 0,
               right: 0,
               backgroundColor: 'rgba(255, 255, 255, 0.99)',
@@ -642,14 +659,14 @@ export default function UnifiedHeader({ onOpenAppointment }) {
               WebkitBackdropFilter: 'blur(24px)',
               borderBottom: '2px solid #e2e8f0',
               padding: '16px 16px 32px',
-              maxHeight: 'calc(100dvh - var(--mobile-header-offset, 0px))',
+              maxHeight: 'calc(100dvh - var(--mobile-header-offset, 68px))',
               overflowY: 'auto',
               overscrollBehavior: 'contain',
               WebkitOverflowScrolling: 'touch',
-              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.25)',
+              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.35)',
               width: '100%',
               boxSizing: 'border-box',
-              zIndex: 999
+              zIndex: 9999
             }}
           >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -731,9 +748,9 @@ export default function UnifiedHeader({ onOpenAppointment }) {
                     }}
                   >
                     <span>• {item.title}</span>
-                    {item.badge && (
+                    {(item as any).badge && (
                       <span style={{ fontSize: '0.68rem', color: '#b45309', backgroundColor: '#fef3c7', padding: '1px 6px', borderRadius: '9999px', fontWeight: '700' }}>
-                        {item.badge}
+                        {(item as any).badge}
                       </span>
                     )}
                   </Link>

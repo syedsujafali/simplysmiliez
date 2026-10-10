@@ -15,7 +15,11 @@ import {
 } from 'lucide-react';
 import { clinicInfo } from '@/data/clinicData';
 
-export default function Navbar({ onOpenAppointment }) {
+interface NavbarProps {
+  onOpenAppointment?: (service?: string) => void;
+}
+
+export default function Navbar({ onOpenAppointment }: NavbarProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -387,7 +391,7 @@ export default function Navbar({ onOpenAppointment }) {
               <Phone size={14} /> Call
             </a>
             <button
-              onClick={onOpenAppointment}
+              onClick={() => onOpenAppointment?.()}
               className="btn btn-primary btn-sm"
               style={{
                 boxShadow: '0 4px 20px rgba(0, 119, 182, 0.45)',
@@ -478,9 +482,9 @@ export default function Navbar({ onOpenAppointment }) {
                       }}
                     >
                       <span>• {item.title}</span>
-                      {item.badge && (
+                      {(item as any).badge && (
                         <span style={{ fontSize: '0.68rem', color: '#f59e0b', fontWeight: '700' }}>
-                          {item.badge}
+                          {(item as any).badge}
                         </span>
                       )}
                     </Link>

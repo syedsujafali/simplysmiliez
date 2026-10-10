@@ -4,7 +4,7 @@ import {
   X, 
   ChevronRight, 
   Sparkles, 
-  Tooth, 
+  Sparkles as Tooth, 
   Layers, 
   Crown, 
   Smile, 
@@ -16,7 +16,12 @@ import {
   UserCheck 
 } from 'lucide-react';
 
-export default function ServicesModal({ isOpen, onClose }) {
+interface ServicesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
   if (!isOpen) return null;
 
   const items = [

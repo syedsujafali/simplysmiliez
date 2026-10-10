@@ -10,10 +10,16 @@ import {
   CheckCircle2, 
   Sparkles, 
   Clock, 
-  Tooth 
+  Smile as Tooth 
 } from 'lucide-react';
 
-export default function AppointmentModal({ isOpen, onClose }) {
+interface AppointmentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialService?: string;
+}
+
+export default function AppointmentModal({ isOpen, onClose }: AppointmentModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
