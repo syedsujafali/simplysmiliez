@@ -31,7 +31,7 @@ export default function ServicesModal({ isOpen, onClose }: ServicesModalProps) {
     { title: 'Dental Veneers', desc: 'Porcelain veneers for a perfect smile', href: '/dental-veneers-hyderabad' },
     { title: 'Braces & Invisalign', desc: 'Teeth straightening & clear aligners', href: '/braces' },
     { title: 'Laser Teeth Whitening', desc: 'Instant brightening & stain removal', href: '/laserteeth' },
-    { title: 'Laser Root Canal Therapy', desc: 'Painless & precision RCT treatment', href: '/laserroot' },
+    { title: 'Microscopic Root Canal Therapy', desc: 'Painless precision surgical magnification RCT', href: '/laserroot' },
     { title: 'Laser Gum Surgery', desc: 'Minimally invasive periodontal care', href: '/lasergum' },
     { title: 'Dental Implants', desc: 'Permanent natural tooth replacement', href: '/dentalimplant' },
     { title: 'Pediatric Dentistry', desc: 'Gentle dental care for kids', href: '/pediatary' },

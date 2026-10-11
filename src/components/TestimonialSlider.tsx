@@ -42,13 +42,13 @@ export default function TestimonialSlider() {
     setCurrentIndex((prev) => prev - 1);
   };
 
-  // Automatic scrolling every 3.6 seconds (pauses when user hovers to read)
+  // Automatic scrolling every 2.5 seconds (pauses when user hovers to read)
   useEffect(() => {
     if (isPaused) return;
 
     const timer = setInterval(() => {
       nextSlide();
-    }, 3600);
+    }, 2500);
 
     return () => clearInterval(timer);
   }, [isPaused, count]);
@@ -162,7 +162,7 @@ export default function TestimonialSlider() {
           onTransitionEnd={handleTransitionEnd}
           style={{
             transform: cardWidth > 0 ? `translateX(-${currentIndex * cardWidth}px)` : `translateX(-${currentIndex * 42}%)`,
-            transition: isAnimated ? 'transform 0.48s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'
+            transition: isAnimated ? 'transform 0.35s cubic-bezier(0.25, 1, 0.5, 1)' : 'none'
           }}
         >
           {loopedItems.map((item, idx) => (

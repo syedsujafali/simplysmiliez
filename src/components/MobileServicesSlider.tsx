@@ -1,10 +1,10 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ServiceCard from '@/components/ServiceCard';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function MobileServicesSlider({ services = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : services.length - 1));
@@ -14,11 +14,23 @@ export default function MobileServicesSlider({ services = [] }) {
     setCurrentIndex((prev) => (prev < services.length - 1 ? prev + 1 : 0));
   };
 
+  // Fast auto-scroll: advances card every 2.6 seconds (pauses on touch)
+  useEffect(() => {
+    if (isPaused || !services || services.length <= 1) return;
+
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 2600);
+
+    return () => clearInterval(timer);
+  }, [isPaused, services.length, currentIndex]);
+
   // Touch swipe support
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
   const handleTouchStart = (e) => {
+    setIsPaused(true);
     touchStartX.current = e.targetTouches[0].clientX;
   };
 
@@ -33,85 +45,17 @@ export default function MobileServicesSlider({ services = [] }) {
     } else if (diff < -45) {
       prevSlide();
     }
+    // Resume auto-scroll shortly after touch interaction finishes
+    setTimeout(() => {
+      setIsPaused(false);
+    }, 2500);
   };
 
   if (!services || services.length === 0) return null;
 
   return (
     <div className="mobile-services-slider-container" style={{ position: 'relative', width: '100%' }}>
-      {/* Top Header & Navigation Controls */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
-        marginBottom: '18px',
-        padding: '0 4px'
-      }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          backgroundColor: '#ffffff',
-          padding: '6px 14px',
-          borderRadius: '9999px',
-          border: '1px solid rgba(226, 232, 240, 0.95)',
-          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)',
-          fontSize: '0.82rem',
-          fontWeight: '800',
-          color: 'var(--navy)'
-        }}>
-          <Sparkles size={13} style={{ color: 'var(--primary)' }} />
-          <span>Treatment {String(currentIndex + 1).padStart(2, '0')} / {String(services.length).padStart(2, '0')}</span>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button
-            onClick={prevSlide}
-            aria-label="Previous Treatment"
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              border: '1px solid rgba(226, 232, 240, 0.95)',
-              color: 'var(--navy)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
-              transition: 'all 0.2s ease',
-              touchAction: 'manipulation'
-            }}
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={nextSlide}
-            aria-label="Next Treatment"
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--primary)',
-              border: '1px solid var(--primary)',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
-              transition: 'all 0.2s ease',
-              touchAction: 'manipulation'
-            }}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-      </div>
-
-      {/* 3D Coverflow Stage with Peeked Neighbor Cards */}
+      {/* 3D Coverflow Stage with Peeked Neighbor Cards (Swipe Enabled) */}
       <div
         style={{
           position: 'relative',
@@ -123,14 +67,16 @@ export default function MobileServicesSlider({ services = [] }) {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
         <div
           style={{
             display: 'flex',
             width: '100%',
-            /* Each slide occupies 84% width. Offset by 8% so active slide is dead-centered and 8% left/right cards peek */
-            transform: `translateX(calc(8% - ${currentIndex * 84}%))`,
-            transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)'
+            /* Each slide occupies 96% width for full wide card presentation on mobile */
+            transform: `translateX(calc(2% - ${currentIndex * 96}%))`,
+            transition: 'transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)'
           }}
         >
           {services.map((service, idx) => {
@@ -144,16 +90,16 @@ export default function MobileServicesSlider({ services = [] }) {
                   if (!isCurrent) setCurrentIndex(idx);
                 }}
                 style={{
-                  flex: '0 0 84%',
-                  width: '84%',
-                  maxWidth: '84%',
+                  flex: '0 0 96%',
+                  width: '96%',
+                  maxWidth: '96%',
                   boxSizing: 'border-box',
-                  padding: '0 8px',
-                  /* 3D depth layer: Active card is full size and raised, side cards step back and dim */
+                  padding: '0 4px',
+                  /* 3D depth layer: Active card is full size, side cards step back and dim */
                   transform: isCurrent
                     ? 'scale(1) translateZ(0)'
-                    : 'scale(0.91) translateY(8px)',
-                  opacity: isCurrent ? 1 : isAdjacent ? 0.72 : 0.4,
+                    : 'scale(0.96) translateY(4px)',
+                  opacity: isCurrent ? 1 : isAdjacent ? 0.75 : 0.35,
                   zIndex: isCurrent ? 10 : 2,
                   transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
                   pointerEvents: isCurrent ? 'auto' : 'auto',

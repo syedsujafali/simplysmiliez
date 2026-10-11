@@ -72,6 +72,7 @@ export default function GalleryViewer({ limit = null }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Touch swipe support
   const touchStartX = useRef(0);
@@ -93,7 +94,19 @@ export default function GalleryViewer({ limit = null }) {
     setCurrentIndex((prev) => (prev < displayItems.length - 1 ? prev + 1 : 0));
   };
 
+  // Fast Auto-Scroll: Automatically advances images every 2.6 seconds (pauses on touch/lightbox)
+  useEffect(() => {
+    if (isPaused || lightboxIndex !== null || !displayItems || displayItems.length <= 1) return;
+
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 2600);
+
+    return () => clearInterval(timer);
+  }, [isPaused, lightboxIndex, displayItems.length, currentIndex]);
+
   const handleTouchStart = (e) => {
+    setIsPaused(true);
     touchStartX.current = e.targetTouches[0].clientX;
     touchEndX.current = e.targetTouches[0].clientX;
     isSwiping.current = false;
@@ -113,6 +126,9 @@ export default function GalleryViewer({ limit = null }) {
     } else if (diff < -45) {
       prevSlide();
     }
+    setTimeout(() => {
+      setIsPaused(false);
+    }, 2500);
   };
 
   // Close lightbox on Escape key, navigate on Arrow keys
@@ -209,59 +225,6 @@ export default function GalleryViewer({ limit = null }) {
 
       {/* Mobile Only: Touch-Friendly Gallery Carousel Slider */}
       <div className="mobile-gallery-slider-container" style={{ position: 'relative', width: '100%' }}>
-        {/* Navigation Controls */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          gap: '8px',
-          marginBottom: '14px',
-          padding: '0 4px'
-        }}>
-          <button
-            onClick={prevSlide}
-            aria-label="Previous Photo"
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              border: '1px solid rgba(226, 232, 240, 0.95)',
-              color: 'var(--navy)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
-              transition: 'all 0.2s ease',
-              touchAction: 'manipulation'
-            }}
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={nextSlide}
-            aria-label="Next Photo"
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--primary)',
-              border: '1px solid var(--primary)',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
-              transition: 'all 0.2s ease',
-              touchAction: 'manipulation'
-            }}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-
         {/* 3D Coverflow Stage with Peeked Neighbor Cards */}
         <div
           style={{
@@ -274,13 +237,15 @@ export default function GalleryViewer({ limit = null }) {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
           <div
             style={{
               display: 'flex',
               width: '100%',
               transform: `translateX(calc(8% - ${currentIndex * 84}%))`,
-              transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)'
+              transition: 'transform 0.32s cubic-bezier(0.25, 1, 0.5, 1)'
             }}
           >
             {displayItems.map((item, idx) => {

@@ -98,7 +98,7 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
   const specialitiesCol1 = [
     { title: 'Invisalign & Braces', href: '/braces', desc: 'Invisible aligners & orthodontic smile correction', badge: '30% Off' },
     { title: 'Dental Implants', href: '/dentalimplant', desc: 'Permanent titanium tooth replacement', badge: '30% Off' },
-    { title: 'Single-Sitting Laser RCT', href: '/laserroot', desc: 'Painless laser endodontics root canal' },
+    { title: 'Microscopic Root Canal Therapy', href: '/laserroot', desc: 'Painless precision surgical magnification RCT' },
     { title: 'Laser Teeth Whitening', href: '/laserteeth', desc: 'Instant 1-hour clinic smile brightening' },
     { title: 'Pediatric Dentistry', href: '/pediatary', desc: 'Gentle dental care for toddlers & kids' }
   ];

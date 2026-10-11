@@ -1016,12 +1016,12 @@ export const servicesData = [
   },
   {
     "slug": "laserroot",
-    "title": "Laser Root Canal Therapy",
-    "heroHeading": "Laser Root Canal Treatment in Hyderabad\n | Simply Smilez Dental Clinic",
-    "image": "/images/laserroot.webp",
-    "shortDesc": "Painless, high-precision laser root canal therapy to eliminate infection and save your natural tooth.",
-    "metaTitle": "Laser Root Canal Treatment in Hyderabad | Simply Smilez",
-    "metaDescription": "Get laser root canal treatment in Hyderabad at Simply Smilez Dental Clinic, Shaikpet. Preserve infected or damaged teeth with personalized dental care.",
+    "title": "Microscopic Root Canal Therapy",
+    "heroHeading": "Microscopic Root Canal Treatment in Hyderabad\n | Simply Smilez Dental Clinic",
+    "image": "/images/microscopic-root-canal.jpg",
+    "shortDesc": "Painless, high-precision microscopic root canal therapy with advanced surgical magnification to eliminate infection and save your natural tooth.",
+    "metaTitle": "Microscopic Root Canal Treatment in Hyderabad | Simply Smilez",
+    "metaDescription": "Get microscopic root canal treatment in Hyderabad at Simply Smilez Dental Clinic, Shaikpet. Advanced surgical magnification preserves damaged teeth with unmatched precision.",
     "sections": [
       {
         "heading": "What Is Root Canal Treatment?",

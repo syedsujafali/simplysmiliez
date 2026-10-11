@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 
 export default function ServiceCard({ service, index = 0 }) {
   const isSpecialOffer = service.slug === 'braces' || service.slug === 'dentalimplant';
@@ -21,8 +21,6 @@ export default function ServiceCard({ service, index = 0 }) {
     return 'Speciality Care';
   };
 
-  const formattedNumber = index < 9 ? `0${index + 1}` : `${index + 1}`;
-
   return (
     <Link
       href={`/${service.slug}`}
@@ -34,102 +32,74 @@ export default function ServiceCard({ service, index = 0 }) {
         cursor: 'pointer'
       }}
     >
-      {/* Image Stage */}
+      {/* Image Stage: Pure & clean image with zero overlays */}
       <div className="service-img-wrap" style={{ display: 'block', position: 'relative' }}>
         <img
           src={service.image}
           alt={service.title}
         />
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(to top, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.15) 50%, transparent 100%)'
-        }} />
+      </div>
 
-        {/* Top Badges */}
+      {/* Card Content Body */}
+      <div style={{ padding: '20px 22px 20px 22px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+        {/* Badges Bar (Rendered BELOW the image) */}
         <div style={{
-          position: 'absolute',
-          top: '14px',
-          left: '14px',
-          right: '14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          zIndex: 10,
-          pointerEvents: 'none'
+          gap: '8px',
+          marginBottom: '14px',
+          flexWrap: 'wrap'
         }}>
           <span style={{
-            backgroundColor: 'rgba(15, 23, 42, 0.82)',
-            color: '#38bdf8',
-            padding: '5px 12px',
+            backgroundColor: 'rgba(2, 132, 199, 0.1)',
+            color: '#0284c7',
+            padding: '4px 12px',
             borderRadius: '9999px',
             fontSize: '0.74rem',
             fontWeight: '800',
             letterSpacing: '0.04em',
             textTransform: 'uppercase',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(56, 189, 248, 0.35)',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+            border: '1px solid rgba(2, 132, 199, 0.25)'
           }}>
             {getCategory()}
           </span>
 
-          {isSpecialOffer ? (
-            <span style={{
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-              color: '#ffffff',
-              padding: '5px 12px',
-              borderRadius: '9999px',
-              fontSize: '0.74rem',
-              fontWeight: '800',
-              letterSpacing: '0.03em',
-              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.45)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              <Sparkles size={12} /> 30% OFF
-            </span>
-          ) : isLaser ? (
-            <span style={{
-              background: 'rgba(16, 185, 129, 0.92)',
-              color: '#ffffff',
-              padding: '5px 12px',
-              borderRadius: '9999px',
-              fontSize: '0.74rem',
-              fontWeight: '800',
-              backdropFilter: 'blur(8px)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)'
-            }}>
-              <Zap size={12} /> Laser Tech
-            </span>
-          ) : null}
+            {/* Special Highlight Badges (if any) */}
+            {isSpecialOffer ? (
+              <span style={{
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: '#ffffff',
+                padding: '4px 10px',
+                borderRadius: '9999px',
+                fontSize: '0.72rem',
+                fontWeight: '800',
+                letterSpacing: '0.03em',
+                boxShadow: '0 2px 8px rgba(245, 158, 11, 0.35)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <Sparkles size={11} /> 30% OFF
+              </span>
+            ) : isLaser ? (
+              <span style={{
+                backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                color: '#059669',
+                padding: '4px 10px',
+                borderRadius: '9999px',
+                fontSize: '0.72rem',
+                fontWeight: '800',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                border: '1px solid rgba(16, 185, 129, 0.25)'
+              }}>
+                <Zap size={11} /> Laser Tech
+              </span>
+            ) : null}
         </div>
 
-        {/* Index Tag on Bottom-Right of Image */}
-        <div style={{
-          position: 'absolute',
-          bottom: '12px',
-          right: '14px',
-          backgroundColor: 'rgba(15, 23, 42, 0.65)',
-          color: '#e2e8f0',
-          backdropFilter: 'blur(6px)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          borderRadius: '8px',
-          padding: '2px 8px',
-          fontSize: '0.72rem',
-          fontWeight: '800',
-          letterSpacing: '0.05em'
-        }}>
-          {formattedNumber}
-        </div>
-      </div>
-
-      {/* Card Content Body */}
-      <div style={{ padding: '22px 24px 20px 24px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <h3 style={{
           fontSize: '1.24rem',
           fontWeight: '800',

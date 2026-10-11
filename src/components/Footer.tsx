@@ -34,7 +34,7 @@ export default function Footer() {
 
   const services = [
     { title: 'Invisalign & Clear Aligners', href: '/braces' },
-    { title: 'Laser Root Canal Therapy', href: '/laserroot' },
+    { title: 'Microscopic Root Canal Therapy', href: '/laserroot' },
     { title: 'Pediatric Dentistry', href: '/pediatary' },
     { title: 'Dental Implants', href: '/dentalimplant' },
     { title: 'Dental Veneers', href: '/dental-veneers-hyderabad' },
@@ -109,7 +109,7 @@ export default function Footer() {
 
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <a
-                  href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`}
+                  href={`tel:${clinicInfo.phones?.[0]?.value || '+917799376656'}`}
                   className="btn btn-primary btn-sm"
                   style={{
                     padding: '8px 16px',
@@ -237,12 +237,12 @@ export default function Footer() {
                       Phone Numbers:
                     </strong>
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
-                      <a href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
-                        {clinicInfo.phones?.[0]?.display || '96033 38904'}
+                      <a href={`tel:${clinicInfo.phones?.[0]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
+                        {clinicInfo.phones?.[0]?.display || '77993 76656'}
                       </a>
                       <span style={{ color: '#64748b' }}>•</span>
-                      <a href={`tel:${clinicInfo.phones?.[1]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
-                        {clinicInfo.phones?.[1]?.display || '77993 76656'}
+                      <a href={`tel:${clinicInfo.phones?.[1]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700', whiteSpace: 'nowrap' }}>
+                        {clinicInfo.phones?.[1]?.display || '96033 38904'}
                       </a>
                     </div>
                   </div>
@@ -616,12 +616,12 @@ export default function Footer() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
                 <Phone size={15} style={{ color: '#38bdf8', flexShrink: 0 }} />
                 <span>Call: </span>
-                <a href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
-                  {clinicInfo.phones?.[0]?.display || '96033 38904'}
+                <a href={`tel:${clinicInfo.phones?.[0]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
+                  {clinicInfo.phones?.[0]?.display || '77993 76656'}
                 </a>
                 <span>•</span>
-                <a href={`tel:${clinicInfo.phones?.[1]?.value || '+917799376656'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
-                  {clinicInfo.phones?.[1]?.display || '77993 76656'}
+                <a href={`tel:${clinicInfo.phones?.[1]?.value || '+919603338904'}`} style={{ color: '#38bdf8', fontWeight: '700' }}>
+                  {clinicInfo.phones?.[1]?.display || '96033 38904'}
                 </a>
               </div>
 
@@ -657,7 +657,7 @@ export default function Footer() {
               </a>
 
               <a
-                href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`}
+                href={`tel:${clinicInfo.phones?.[0]?.value || '+917799376656'}`}
                 className="btn btn-primary"
                 style={{
                   width: '100%',
@@ -670,7 +670,7 @@ export default function Footer() {
                   textTransform: 'uppercase'
                 }}
               >
-                <Phone size={16} /> CALL NOW: {clinicInfo.phones?.[0]?.display || '96033 38904'}
+                <Phone size={16} /> CALL NOW: {clinicInfo.phones?.[0]?.display || '77993 76656'}
               </a>
             </div>
 

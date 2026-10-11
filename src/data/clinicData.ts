@@ -3,11 +3,11 @@ export const clinicInfo = {
   tagline: "Comprehensive Dental Care in Shaikpet, Hyderabad",
   discountBanner: "30% Discount on Invisalign & Dental Implants",
   phones: [
-    { display: "96033 38904", value: "+919603338904" },
-    { display: "77993 76656", value: "+917799376656" }
+    { display: "77993 76656", value: "+917799376656" },
+    { display: "96033 38904", value: "+919603338904" }
   ],
-  primaryPhone: "96033 38904",
-  secondaryPhone: "77993 76656",
+  primaryPhone: "77993 76656",
+  secondaryPhone: "96033 38904",
   whatsapp: "+917799376656",
   whatsappUrl: "https://wa.me/917799376656",
   email: "info.invisaligndental@gmail.com",

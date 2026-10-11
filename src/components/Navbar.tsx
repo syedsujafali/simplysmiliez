@@ -42,7 +42,7 @@ export default function Navbar({ onOpenAppointment }: NavbarProps) {
   const specialitiesCol1 = [
     { title: 'Invisalign & Braces', href: '/braces', desc: 'Invisible aligners & orthodontic smile correction', badge: '30% Off' },
     { title: 'Dental Implants', href: '/dentalimplant', desc: 'Permanent titanium tooth replacement', badge: 'Popular' },
-    { title: 'Single-Sitting Laser RCT', href: '/laserroot', desc: 'Pain-free laser endodontics root canal' },
+    { title: 'Microscopic Root Canal Therapy', href: '/laserroot', desc: 'Precision surgical magnification root canal' },
     { title: 'Laser Teeth Whitening', href: '/laserteeth', desc: 'Instant 1-hour clinic smile brightening' },
     { title: 'Pediatric Dentistry', href: '/pediatary', desc: 'Specialized gentle dental care for kids' }
   ];
