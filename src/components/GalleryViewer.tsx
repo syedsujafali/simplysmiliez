@@ -1,13 +1,121 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { galleryData, galleryCategories } from '@/data/galleryData';
-import { Maximize2, X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
+
+function GalleryCard({ item, onOpen }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      onClick={onOpen}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="luxury-gallery-card"
+      style={{
+        display: 'flex',
+        width: '100%',
+        aspectRatio: '1 / 1',
+        position: 'relative',
+        cursor: 'pointer'
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label="Click to enlarge photo"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+    >
+      <div className="gallery-img-wrap" style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <img
+          src={item.src}
+          alt={item.alt || 'Simply Smilez Dental Clinic Gallery'}
+        />
+
+        {/* Subtle Frosted Hover Zoom Indicator (No text, pure icon) */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(7, 21, 41, 0.25)',
+          opacity: isHovered ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+          pointerEvents: 'none'
+        }}>
+          <div style={{
+            width: '46px',
+            height: '46px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+            transform: isHovered ? 'scale(1)' : 'scale(0.85)',
+            transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <Maximize2 size={20} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function GalleryViewer({ limit = null }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Close lightbox on Escape key
+  // Touch swipe support
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const isSwiping = useRef(false);
+
+  const filteredItems = galleryData.filter(item => {
+    if (selectedCategory === 'All') return true;
+    return item.category === selectedCategory;
+  });
+
+  const displayItems = limit ? filteredItems.slice(0, limit) : filteredItems;
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : displayItems.length - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev < displayItems.length - 1 ? prev + 1 : 0));
+  };
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = e.targetTouches[0].clientX;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+    if (Math.abs(touchStartX.current - touchEndX.current) > 10) {
+      isSwiping.current = true;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (diff > 45) {
+      nextSlide();
+    } else if (diff < -45) {
+      prevSlide();
+    }
+  };
+
+  // Close lightbox on Escape key, navigate on Arrow keys
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setLightboxIndex(null);
@@ -28,14 +136,7 @@ export default function GalleryViewer({ limit = null }) {
       document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lightboxIndex]);
-
-  const filteredItems = galleryData.filter(item => {
-    if (selectedCategory === 'All') return true;
-    return item.category === selectedCategory;
-  });
-
-  const displayItems = limit ? filteredItems.slice(0, limit) : filteredItems;
+  }, [lightboxIndex, displayItems.length]);
 
   const openLightbox = (idx) => {
     setLightboxIndex(idx);
@@ -71,7 +172,10 @@ export default function GalleryViewer({ limit = null }) {
             return (
               <button
                 key={idx}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setCurrentIndex(0);
+                }}
                 style={{
                   padding: '8px 18px',
                   borderRadius: '9999px',
@@ -92,101 +196,180 @@ export default function GalleryViewer({ limit = null }) {
         </div>
       )}
 
-      {/* 2 Rows x 3 Columns Gallery Grid */}
-      <div className={limit ? "gallery-2x3-grid" : "gallery-2x3-grid"}>
-        {displayItems.map((item, idx) => {
-          const numStr = String(idx + 1).padStart(2, '0');
-          return (
-            <div
-              key={item.id}
-              onClick={() => openLightbox(idx)}
-              className="gallery-card-modern"
-            >
-              {/* Gallery Image */}
-              <img
-                src={item.src}
-                alt={item.alt || item.title}
+      {/* Desktop & Tablet Grid */}
+      <div className="gallery-2x3-grid">
+        {displayItems.map((item, idx) => (
+          <GalleryCard
+            key={item.id}
+            item={item}
+            onOpen={() => openLightbox(idx)}
+          />
+        ))}
+      </div>
+
+      {/* Mobile Only: Touch-Friendly Gallery Carousel Slider */}
+      <div className="mobile-gallery-slider-container" style={{ position: 'relative', width: '100%' }}>
+        {/* Navigation Controls */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '8px',
+          marginBottom: '14px',
+          padding: '0 4px'
+        }}>
+          <button
+            onClick={prevSlide}
+            aria-label="Previous Photo"
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: '#ffffff',
+              border: '1px solid rgba(226, 232, 240, 0.95)',
+              color: 'var(--navy)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.06)',
+              transition: 'all 0.2s ease',
+              touchAction: 'manipulation'
+            }}
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={nextSlide}
+            aria-label="Next Photo"
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--primary)',
+              border: '1px solid var(--primary)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
+              transition: 'all 0.2s ease',
+              touchAction: 'manipulation'
+            }}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+
+        {/* 3D Coverflow Stage with Peeked Neighbor Cards */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            overflow: 'hidden',
+            padding: '12px 0 20px 0',
+            perspective: '1200px'
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              transform: `translateX(calc(8% - ${currentIndex * 84}%))`,
+              transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)'
+            }}
+          >
+            {displayItems.map((item, idx) => {
+              const isCurrent = idx === currentIndex;
+              const isAdjacent = Math.abs(idx - currentIndex) === 1;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    // If not swiping, open lightbox directly on click
+                    if (!isSwiping.current) {
+                      openLightbox(idx);
+                    }
+                  }}
+                  style={{
+                    flex: '0 0 84%',
+                    width: '84%',
+                    maxWidth: '84%',
+                    boxSizing: 'border-box',
+                    padding: '0 8px',
+                    transform: isCurrent
+                      ? 'scale(1) translateZ(0)'
+                      : 'scale(0.91) translateY(8px)',
+                    opacity: isCurrent ? 1 : isAdjacent ? 0.72 : 0.4,
+                    zIndex: isCurrent ? 10 : 2,
+                    transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <GalleryCard
+                    item={item}
+                    onOpen={() => openLightbox(idx)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Pagination Dot Indicators */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '14px',
+          overflowX: 'auto',
+          padding: '4px'
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '6px 14px',
+            backgroundColor: 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderRadius: '9999px',
+            border: '1px solid rgba(255, 255, 255, 0.95)',
+            boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(56, 189, 248, 0.25)',
+            maxWidth: '100%',
+            overflowX: 'auto'
+          }}>
+            {displayItems.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                aria-label={`Go to photo ${idx + 1}`}
+                style={{
+                  height: '9px',
+                  width: idx === currentIndex ? '30px' : '9px',
+                  borderRadius: '9999px',
+                  background: idx === currentIndex
+                    ? 'linear-gradient(135deg, #0284c7 0%, #00b4d8 100%)'
+                    : '#94a3b8',
+                  border: idx === currentIndex ? 'none' : '1px solid #64748b',
+                  boxShadow: idx === currentIndex
+                    ? '0 2px 8px rgba(2, 132, 199, 0.5)'
+                    : 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                  touchAction: 'manipulation'
+                }}
               />
-
-              {/* Gradient Dark Overlay */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to top, rgba(7, 21, 41, 0.92) 0%, rgba(7, 21, 41, 0.35) 45%, transparent 100%)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                padding: '20px',
-                color: '#ffffff',
-                zIndex: 2
-              }}>
-                <div style={{
-                  fontSize: '0.74rem',
-                  color: '#38bdf8',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  marginBottom: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}>
-                  <Sparkles size={11} /> {item.category}
-                </div>
-                <div style={{
-                  fontSize: '1.02rem',
-                  fontWeight: '800',
-                  lineHeight: '1.3',
-                  color: '#ffffff',
-                  letterSpacing: '-0.01em'
-                }}>
-                  {item.title}
-                </div>
-              </div>
-
-              {/* Numeric Badge (Top Left) */}
-              <div style={{
-                position: 'absolute',
-                top: '14px',
-                left: '14px',
-                backgroundColor: 'rgba(7, 21, 41, 0.75)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#38bdf8',
-                fontSize: '0.74rem',
-                fontWeight: '800',
-                padding: '4px 10px',
-                borderRadius: '9999px',
-                zIndex: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                {numStr}
-              </div>
-
-              {/* Zoom Icon Badge (Top Right) */}
-              <div style={{
-                position: 'absolute',
-                top: '14px',
-                right: '14px',
-                backgroundColor: 'rgba(255, 255, 255, 0.92)',
-                color: 'var(--navy)',
-                width: '34px',
-                height: '34px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                zIndex: 2,
-                transition: 'all 0.25s ease'
-              }}>
-                <Maximize2 size={15} />
-              </div>
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Lightbox Modal */}
@@ -196,23 +379,25 @@ export default function GalleryViewer({ limit = null }) {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(7, 21, 41, 0.94)',
-            backdropFilter: 'blur(14px)',
+            backgroundColor: 'rgba(7, 21, 41, 0.96)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
             zIndex: 999999,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '24px'
+            padding: '20px'
           }}
         >
-          {/* Close button */}
+          {/* Close button (top right of screen) */}
           <button
             onClick={closeLightbox}
             style={{
               position: 'absolute',
-              top: '24px',
-              right: '24px',
-              background: 'rgba(255, 255, 255, 0.15)',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255, 255, 255, 0.12)',
               border: '1px solid rgba(255, 255, 255, 0.25)',
               color: '#ffffff',
               width: '44px',
@@ -222,157 +407,110 @@ export default function GalleryViewer({ limit = null }) {
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              zIndex: 10,
+              zIndex: 20,
               transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.transform = 'scale(1.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-              e.currentTarget.style.transform = 'scale(1)';
             }}
             aria-label="Close Lightbox"
           >
             <X size={22} />
           </button>
 
-          {/* Prev Button */}
-          <button
-            onClick={prevImage}
-            style={{
-              position: 'absolute',
-              left: '24px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              color: '#ffffff',
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              zIndex: 10,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-            }}
-            aria-label="Previous Photo"
-          >
-            <ChevronLeft size={28} />
-          </button>
-
-          {/* Next Button */}
-          <button
-            onClick={nextImage}
-            style={{
-              position: 'absolute',
-              right: '24px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              color: '#ffffff',
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              zIndex: 10,
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1.08)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
-              e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-            }}
-            aria-label="Next Photo"
-          >
-            <ChevronRight size={28} />
-          </button>
-
-          {/* Lightbox Content Container */}
+          {/* Clean Image Container - ZERO ARROWS ON THE IMAGE */}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: '900px',
+              maxWidth: '850px',
               width: '100%',
-              maxHeight: '88vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              backgroundColor: '#071529',
-              borderRadius: '20px',
-              overflow: 'hidden',
-              boxShadow: '0 30px 70px rgba(0, 0, 0, 0.6)',
-              border: '1px solid rgba(255, 255, 255, 0.15)'
-            }}
-          >
-            <div style={{
-              width: '100%',
-              maxHeight: '72vh',
+              maxHeight: '76vh',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: '#030a14',
-              padding: '10px'
-            }}>
-              <img
-                src={displayItems[lightboxIndex].src}
-                alt={displayItems[lightboxIndex].title}
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '70vh',
-                  objectFit: 'contain',
-                  borderRadius: '10px'
-                }}
-              />
-            </div>
-            
-            <div style={{
-              padding: '16px 24px',
-              width: '100%',
-              color: '#ffffff',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              boxShadow: '0 30px 70px rgba(0, 0, 0, 0.7)',
+              border: '1.5px solid rgba(56, 189, 248, 0.35)',
+              position: 'relative'
+            }}
+          >
+            <img
+              src={displayItems[lightboxIndex].src}
+              alt="Simply Smilez Dental Clinic Gallery Preview"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '75vh',
+                objectFit: 'contain',
+                display: 'block'
+              }}
+            />
+          </div>
+
+          {/* Bottom Navigation Bar - OUTSIDE AND BELOW THE IMAGE */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
               display: 'flex',
-              justifyContent: 'space-between',
               alignItems: 'center',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-              backgroundColor: '#071529'
-            }}>
-              <div>
-                <span style={{ fontSize: '0.76rem', color: '#38bdf8', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  {displayItems[lightboxIndex].category}
-                </span>
-                <h4 style={{ color: '#ffffff', fontSize: '1.15rem', fontWeight: '800', margin: '2px 0 0 0' }}>
-                  {displayItems[lightboxIndex].title}
-                </h4>
-              </div>
-              <div style={{
-                fontSize: '0.84rem',
-                color: '#94a3b8',
+              justifyContent: 'center',
+              gap: '16px',
+              marginTop: '18px',
+              zIndex: 20
+            }}
+          >
+            <button
+              onClick={prevImage}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 18px',
+                borderRadius: '9999px',
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#ffffff',
+                fontSize: '0.85rem',
                 fontWeight: '700',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                padding: '4px 12px',
-                borderRadius: '9999px'
-              }}>
-                {lightboxIndex + 1} / {displayItems.length}
-              </div>
-            </div>
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              aria-label="Previous Photo"
+            >
+              <ChevronLeft size={18} /> Prev
+            </button>
+
+            <span style={{
+              color: '#38bdf8',
+              fontSize: '0.86rem',
+              fontWeight: '800',
+              padding: '6px 14px',
+              backgroundColor: 'rgba(15, 23, 42, 0.7)',
+              borderRadius: '9999px',
+              border: '1px solid rgba(56, 189, 248, 0.25)'
+            }}>
+              {lightboxIndex + 1} / {displayItems.length}
+            </span>
+
+            <button
+              onClick={nextImage}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 18px',
+                borderRadius: '9999px',
+                backgroundColor: 'var(--primary)',
+                border: '1px solid var(--primary)',
+                color: '#ffffff',
+                fontSize: '0.85rem',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.4)',
+                transition: 'all 0.2s ease'
+              }}
+              aria-label="Next Photo"
+            >
+              Next <ChevronRight size={18} />
+            </button>
           </div>
         </div>
       )}

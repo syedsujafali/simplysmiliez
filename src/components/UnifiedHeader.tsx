@@ -23,8 +23,19 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuClosing, setMobileMenuClosing] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const headerRef = useRef(null);
+
+  const closeMobileMenu = () => {
+    setMobileMenuClosing(true);
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+      setMobileMenuClosing(false);
+      setMobileServicesOpen(false);
+    }, 300);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +52,7 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
         const h = headerRef.current.getBoundingClientRect().height;
         if (h > 0) {
           document.documentElement.style.setProperty('--mobile-header-offset', `${h}px`);
+          document.documentElement.style.setProperty('--main-content-offset', `${h}px`);
         }
       }
     };
@@ -53,26 +65,35 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
     };
   }, [isScrolled, mobileMenuOpen, pathname]);
 
-  // Close menus on route change
+  // Close menus on route change — instant reset if menu was never open
   useEffect(() => {
-    setMobileMenuOpen(false);
+    if (mobileMenuOpen || mobileMenuClosing) {
+      // Menu was open: animate it closed
+      closeMobileMenu();
+    } else {
+      // Menu was already closed: just reset state cleanly, no animation needed
+      setMobileServicesOpen(false);
+    }
     setDropdownOpen(false);
   }, [pathname]);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll when mobile menu is open (including during close animation)
   useEffect(() => {
-    if (mobileMenuOpen) {
+    if (mobileMenuOpen || mobileMenuClosing) {
       document.body.style.overflow = 'hidden';
       document.body.style.touchAction = 'none';
+      document.documentElement.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
       document.body.style.touchAction = '';
+      document.documentElement.style.overflow = '';
     }
     return () => {
       document.body.style.overflow = '';
       document.body.style.touchAction = '';
+      document.documentElement.style.overflow = '';
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, mobileMenuClosing]);
 
   const specialitiesCol1 = [
     { title: 'Invisalign & Braces', href: '/braces', desc: 'Invisible aligners & orthodontic smile correction', badge: '30% Off' },
@@ -107,8 +128,10 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
   return (
     <>
     <header ref={headerRef} style={{
-      position: 'sticky',
+      position: 'fixed',
       top: 0,
+      left: 0,
+      right: 0,
       zIndex: 1000,
       width: '100%',
       transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -148,32 +171,44 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
             </span>
           </div>
 
-          {/* Clinic Timings & Call CTA (Mobile - Perfectly Sized & Centered) */}
+          {/* Clinic Timings & Call CTA (Mobile - New Tel First, Old Tel, WhatsApp) */}
           <div className="header-topbar-mobile-info" style={{
             display: 'none',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '8px',
+            gap: '5px',
             width: '100%',
             textAlign: 'center',
-            fontSize: '0.74rem',
+            fontSize: '0.72rem',
             color: '#e2e8f0'
           }}>
             <span className="beacon-dot" style={{ flexShrink: 0 }} />
-            <span><strong style={{ color: '#ffffff' }}>Open Today:</strong> 10am - 9pm</span>
-            <span style={{ color: '#64748b' }}>•</span>
+            <span><strong style={{ color: '#ffffff' }}>Open:</strong> 10am–9pm</span>
+            <span style={{ color: '#334155' }}>•</span>
+            {/* New number first - tel */}
+            <a
+              href={`tel:${clinicInfo.phones[1].value}`}
+              style={{ color: '#38bdf8', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none' }}
+            >
+              <Phone size={11} style={{ flexShrink: 0 }} /> {clinicInfo.phones[1].display}
+            </a>
+            <span style={{ color: '#334155' }}>•</span>
+            {/* Old number second - tel */}
             <a
               href={`tel:${clinicInfo.phones[0].value}`}
-              style={{
-                color: '#38bdf8',
-                fontWeight: '700',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '3px',
-                textDecoration: 'none'
-              }}
+              style={{ color: '#38bdf8', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none' }}
             >
               <Phone size={11} style={{ flexShrink: 0 }} /> {clinicInfo.phones[0].display}
+            </a>
+            <span style={{ color: '#334155' }}>•</span>
+            {/* WhatsApp */}
+            <a
+              href={clinicInfo.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#25d366', fontWeight: '700', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none' }}
+            >
+              <MessageSquare size={11} style={{ flexShrink: 0 }} /> WA
             </a>
           </div>
 
@@ -206,14 +241,33 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
             </span>
           </div>
 
-          {/* Direct Phone & WhatsApp */}
+          {/* Direct Phone & Priority WhatsApp */}
           <div className="header-top-contacts" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '14px',
+            gap: '10px',
             fontSize: '0.78rem',
             whiteSpace: 'nowrap'
           }}>
+            {/* New priority number - first */}
+            <a
+              href={`tel:${clinicInfo.phones[1].value}`}
+              style={{
+                color: '#ffffff',
+                fontWeight: '600',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                textDecoration: 'none'
+              }}
+            >
+              <Phone size={12} style={{ color: '#38bdf8' }} />
+              <span>{clinicInfo.phones[1].display}</span>
+            </a>
+
+            <span style={{ color: '#334155' }}>|</span>
+
+            {/* Old number - second */}
             <a
               href={`tel:${clinicInfo.phones[0].value}`}
               style={{
@@ -221,12 +275,15 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
                 fontWeight: '600',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px'
+                gap: '5px',
+                textDecoration: 'none'
               }}
             >
               <Phone size={12} style={{ color: '#38bdf8' }} />
               <span>{clinicInfo.phones[0].display}</span>
             </a>
+
+            {/* Priority number - WhatsApp pill */}
             <a
               href={clinicInfo.whatsappUrl}
               target="_blank"
@@ -236,7 +293,12 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
                 fontWeight: '700',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '5px',
+                background: 'rgba(37, 211, 102, 0.1)',
+                border: '1px solid rgba(37, 211, 102, 0.3)',
+                padding: '2px 8px',
+                borderRadius: '9999px',
+                textDecoration: 'none'
               }}
             >
               <MessageSquare size={12} />
@@ -607,7 +669,11 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setMobileMenuOpen((prev) => !prev);
+                  if (mobileMenuOpen && !mobileMenuClosing) {
+                    closeMobileMenu();
+                  } else {
+                    setMobileMenuOpen(true);
+                  }
                 }}
                 className="mobile-toggle-btn"
                 aria-label="Toggle Menu"
@@ -632,209 +698,245 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
 
       </header>
 
-      {/* Mobile Navigation Drawer – fixed, below sticky header */}
-      {mobileMenuOpen && (
+      {/* Mobile Navigation Drawer – 75% width slide-in from right */}
+      {(mobileMenuOpen || mobileMenuClosing) && (
         <>
           {/* Backdrop */}
           <div
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={closeMobileMenu}
             style={{
               position: 'fixed',
               inset: 0,
-              backgroundColor: 'rgba(7, 21, 41, 0.55)',
-              backdropFilter: 'blur(3px)',
-              WebkitBackdropFilter: 'blur(3px)',
-              zIndex: 9998
+              backgroundColor: 'rgba(7, 21, 41, 0.58)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              zIndex: 9998,
+              animation: mobileMenuClosing
+                ? 'mobileBackdropOut 0.3s ease forwards'
+                : 'mobileBackdropIn 0.3s ease forwards'
             }}
           />
-          <div 
+
+          {/* Drawer Panel */}
+          <div
             className="mobile-nav-drawer"
             style={{
               position: 'fixed',
-              top: 'var(--mobile-header-offset, 68px)',
-              left: 0,
+              top: 0,
               right: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.99)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              borderBottom: '2px solid #e2e8f0',
-              padding: '16px 16px 32px',
-              maxHeight: 'calc(100dvh - var(--mobile-header-offset, 68px))',
+              bottom: 0,
+              width: '75%',
+              maxWidth: '340px',
+              backgroundColor: '#ffffff',
+              boxShadow: '-8px 0 40px rgba(15, 23, 42, 0.22)',
               overflowY: 'auto',
               overscrollBehavior: 'contain',
               WebkitOverflowScrolling: 'touch',
-              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.35)',
-              width: '100%',
-              boxSizing: 'border-box',
-              zIndex: 9999
+              zIndex: 9999,
+              display: 'flex',
+              flexDirection: 'column',
+              animation: mobileMenuClosing
+                ? 'mobileDrawerOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards'
+                : 'mobileDrawerIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards'
             }}
           >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: pathname === '/' ? 'var(--primary-light)' : 'transparent',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/about' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                backgroundColor: pathname === '/about' ? 'var(--primary-light)' : 'transparent',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              About Us
-            </Link>
-
-            {/* Mobile Specialities Accordion */}
+            {/* Drawer Header */}
             <div style={{
-              background: 'var(--primary-subtle)',
-              borderRadius: '12px',
-              padding: '12px',
-              border: '1px solid rgba(2, 132, 199, 0.15)',
-              margin: '4px 0'
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 18px',
+              borderBottom: '1px solid #e2e8f0',
+              background: 'linear-gradient(135deg, #0f172a 0%, #0369a1 100%)',
+              flexShrink: 0
             }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '8px'
-              }}>
-                <span style={{
-                  color: 'var(--primary)',
-                  fontSize: '0.78rem',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  whiteSpace: 'nowrap'
-                }}>
-                  Dental Treatments
-                </span>
-                <Link 
-                  href="/all-services" 
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{ color: 'var(--navy)', fontSize: '0.78rem', fontWeight: '700' }}
-                >
-                  View All &rarr;
-                </Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img
+                  src="/images/logo-3.webp"
+                  alt="Simply Smilez"
+                  style={{ height: '38px', width: 'auto', objectFit: 'contain', filter: 'brightness(10)' }}
+                />
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                {allSpecialities.map((item, sIdx) => (
-                  <Link
-                    key={sIdx}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    style={{
-                      color: pathname === item.href ? 'var(--primary)' : 'var(--text-body)',
-                      fontSize: '0.85rem',
-                      fontWeight: '600',
-                      padding: '6px 8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <span>• {item.title}</span>
-                    {(item as any).badge && (
-                      <span style={{ fontSize: '0.68rem', color: '#b45309', backgroundColor: '#fef3c7', padding: '1px 6px', borderRadius: '9999px', fontWeight: '700' }}>
-                        {(item as any).badge}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </div>
+              <button
+                onClick={closeMobileMenu}
+                aria-label="Close menu"
+                style={{
+                  background: 'rgba(255,255,255,0.12)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  borderRadius: '10px',
+                  color: '#ffffff',
+                  cursor: 'pointer',
+                  width: '36px',
+                  height: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <X size={18} />
+              </button>
             </div>
 
-            <Link
-              href="/doctor"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/doctor' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Doctors
-            </Link>
-            <Link
-              href="/gallery"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/gallery' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Gallery
-            </Link>
-            <Link
-              href="/testimonal"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/testimonal' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Testimonials
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                color: pathname === '/contact' ? 'var(--primary)' : 'var(--navy)',
-                fontWeight: '700',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Contact
-            </Link>
-          </div>
+            {/* Nav Links */}
+            <div style={{ flex: 1, padding: '12px 12px 20px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
 
-          {/* Mobile Actions */}
-          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenAppointment();
-              }}
-              className="btn btn-primary"
-              style={{ width: '100%', justifyContent: 'center' }}
-            >
-              <Calendar size={16} /> Book Appointment
-            </button>
-            <a
-              href={clinicInfo.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-whatsapp"
-              style={{ width: '100%', justifyContent: 'center' }}
-            >
-              <MessageSquare size={16} /> WhatsApp Consultation
-            </a>
+              {/* Home */}
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                style={{
+                  color: pathname === '/' ? 'var(--primary)' : 'var(--navy)',
+                  fontWeight: '700',
+                  fontSize: '0.95rem',
+                  padding: '11px 14px',
+                  borderRadius: '10px',
+                  backgroundColor: pathname === '/' ? 'var(--primary-light)' : 'transparent',
+                  textDecoration: 'none',
+                  display: 'block'
+                }}
+              >
+                Home
+              </Link>
+
+              {/* About */}
+              <Link
+                href="/about"
+                onClick={closeMobileMenu}
+                style={{
+                  color: pathname === '/about' ? 'var(--primary)' : 'var(--navy)',
+                  fontWeight: '700',
+                  fontSize: '0.95rem',
+                  padding: '11px 14px',
+                  borderRadius: '10px',
+                  backgroundColor: pathname === '/about' ? 'var(--primary-light)' : 'transparent',
+                  textDecoration: 'none',
+                  display: 'block'
+                }}
+              >
+                About Us
+              </Link>
+
+              {/* Services Dropdown */}
+              <div style={{ borderRadius: '10px', overflow: 'hidden' }}>
+                <button
+                  onClick={() => setMobileServicesOpen(prev => !prev)}
+                  style={{
+                    width: '100%',
+                    background: mobileServicesOpen ? 'var(--primary-light)' : 'transparent',
+                    border: 'none',
+                    color: isSpecialityActive ? 'var(--primary)' : 'var(--navy)',
+                    fontWeight: '700',
+                    fontSize: '0.95rem',
+                    padding: '11px 14px',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <span>Services</span>
+                  <ChevronDown
+                    size={16}
+                    style={{
+                      transform: mobileServicesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.25s ease',
+                      flexShrink: 0
+                    }}
+                  />
+                </button>
+
+                {/* Services list */}
+                {mobileServicesOpen && (
+                  <div style={{
+                    background: 'var(--primary-subtle)',
+                    borderRadius: '0 0 10px 10px',
+                    padding: '8px 8px 10px',
+                    animation: 'mobileDropdownIn 0.22s cubic-bezier(0.16,1,0.3,1) forwards'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 6px 8px' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: '800', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Dental Treatments
+                      </span>
+                      <Link
+                        href="/all-services"
+                        onClick={closeMobileMenu}
+                        style={{ color: 'var(--navy)', fontSize: '0.75rem', fontWeight: '700', textDecoration: 'none' }}
+                      >
+                        View All →
+                      </Link>
+                    </div>
+                    {allSpecialities.map((item, sIdx) => (
+                      <Link
+                        key={sIdx}
+                        href={item.href}
+                        onClick={closeMobileMenu}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          color: pathname === item.href ? 'var(--primary)' : 'var(--text-body)',
+                          fontSize: '0.86rem',
+                          fontWeight: '600',
+                          padding: '7px 10px',
+                          borderRadius: '8px',
+                          textDecoration: 'none',
+                          backgroundColor: pathname === item.href ? 'rgba(2,132,199,0.1)' : 'transparent',
+                          transition: 'background 0.15s'
+                        }}
+                      >
+                        <span>• {item.title}</span>
+                        {(item as any).badge && (
+                          <span style={{ fontSize: '0.65rem', color: '#b45309', backgroundColor: '#fef3c7', padding: '1px 6px', borderRadius: '9999px', fontWeight: '700', flexShrink: 0 }}>
+                            {(item as any).badge}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Doctors */}
+              <Link href="/doctor" onClick={closeMobileMenu} style={{ color: pathname === '/doctor' ? 'var(--primary)' : 'var(--navy)', fontWeight: '700', fontSize: '0.95rem', padding: '11px 14px', borderRadius: '10px', backgroundColor: pathname === '/doctor' ? 'var(--primary-light)' : 'transparent', textDecoration: 'none', display: 'block' }}>Doctors</Link>
+
+              {/* Gallery */}
+              <Link href="/gallery" onClick={closeMobileMenu} style={{ color: pathname === '/gallery' ? 'var(--primary)' : 'var(--navy)', fontWeight: '700', fontSize: '0.95rem', padding: '11px 14px', borderRadius: '10px', backgroundColor: pathname === '/gallery' ? 'var(--primary-light)' : 'transparent', textDecoration: 'none', display: 'block' }}>Gallery</Link>
+
+              {/* Testimonials */}
+              <Link href="/testimonal" onClick={closeMobileMenu} style={{ color: pathname === '/testimonal' ? 'var(--primary)' : 'var(--navy)', fontWeight: '700', fontSize: '0.95rem', padding: '11px 14px', borderRadius: '10px', backgroundColor: pathname === '/testimonal' ? 'var(--primary-light)' : 'transparent', textDecoration: 'none', display: 'block' }}>Testimonials</Link>
+
+              {/* Contact */}
+              <Link href="/contact" onClick={closeMobileMenu} style={{ color: pathname === '/contact' ? 'var(--primary)' : 'var(--navy)', fontWeight: '700', fontSize: '0.95rem', padding: '11px 14px', borderRadius: '10px', backgroundColor: pathname === '/contact' ? 'var(--primary-light)' : 'transparent', textDecoration: 'none', display: 'block' }}>Contact</Link>
+
+              {/* Divider */}
+              <div style={{ height: '1px', background: '#e2e8f0', margin: '8px 0' }} />
+
+              {/* CTA Buttons */}
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  onOpenAppointment?.();
+                }}
+                className="btn btn-primary"
+                style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
+              >
+                <Calendar size={16} /> Book Appointment
+              </button>
+              <a
+                href={clinicInfo.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-whatsapp"
+                style={{ width: '100%', justifyContent: 'center', textDecoration: 'none' }}
+              >
+                <MessageSquare size={16} /> WhatsApp Chat
+              </a>
+            </div>
           </div>
-        </div>
         </>
       )}
 
@@ -842,6 +944,28 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
         .book-btn-text-short {
           display: none;
         }
+
+        @keyframes mobileDrawerIn {
+          from { transform: translateX(100%); opacity: 0.5; }
+          to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes mobileDrawerOut {
+          from { transform: translateX(0);    opacity: 1; }
+          to   { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes mobileBackdropIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes mobileBackdropOut {
+          from { opacity: 1; }
+          to   { opacity: 0; }
+        }
+        @keyframes mobileDropdownIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 1200px) {
           .header-logo-tag {
             display: none !important;
@@ -850,11 +974,6 @@ export default function UnifiedHeader({ onOpenAppointment }: UnifiedHeaderProps)
         @media (max-width: 1040px) {
           .desktop-nav-menu {
             display: none !important;
-          }
-          .mobile-toggle-btn {
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
           }
         }
         @media (max-width: 900px) {

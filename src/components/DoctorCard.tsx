@@ -101,42 +101,40 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
           background: theme.gradient
         }} />
 
-        {/* Doctor Image Container */}
-        <div className="doctor-image-wrapper" style={{ height: '370px' }}>
+        {/* Doctor Image Container (Pure photo, no text overlay) */}
+        <div className="doctor-image-wrapper" style={{ height: '340px', position: 'relative' }}>
           <img
             src={doctor.image}
             alt={doctor.name}
           />
-          
-          {/* Deep Vignette Overlay */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to top, rgba(7, 21, 41, 0.95) 0%, rgba(7, 21, 41, 0.4) 50%, rgba(7, 21, 41, 0.1) 100%)'
-          }} />
+        </div>
 
-          {/* Floating Top Badges */}
+        {/* Doctor Details Below Image */}
+        <div style={{
+          padding: '24px 26px 20px 26px',
+          display: 'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
+          backgroundColor: '#ffffff'
+        }}>
+          {/* Top Badges Row */}
           <div style={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            right: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            zIndex: 2
+            flexWrap: 'wrap',
+            gap: '8px',
+            marginBottom: '14px'
           }}>
-            {/* Role Badge */}
             <span style={{
-              backgroundColor: theme.badgeBg,
-              color: '#ffffff',
-              padding: '5px 14px',
+              backgroundColor: theme.accentLight,
+              color: theme.accentDark,
+              padding: '4px 12px',
               borderRadius: '9999px',
               fontSize: '0.74rem',
               fontWeight: '800',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
-              backdropFilter: 'blur(10px)',
               border: `1px solid ${theme.badgeBorder}`,
               display: 'inline-flex',
               alignItems: 'center',
@@ -145,15 +143,14 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
               <Sparkles size={13} /> {theme.roleTag}
             </span>
 
-            {/* Experience Badge */}
             <span style={{
-              backgroundColor: '#ffffff',
+              backgroundColor: '#f8fafc',
               color: 'var(--navy)',
-              padding: '5px 12px',
+              padding: '4px 10px',
               borderRadius: '9999px',
               fontSize: '0.76rem',
               fontWeight: '800',
-              boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
+              border: '1px solid #e2e8f0',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '5px'
@@ -162,103 +159,60 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
             </span>
           </div>
 
-          {/* Overlaid Doctor Details */}
-          <div style={{
-            position: 'absolute',
-            bottom: '20px',
-            left: '22px',
-            right: '22px',
-            zIndex: 2
+          {/* Doctor Name */}
+          <h3 style={{
+            fontSize: '1.5rem',
+            color: 'var(--navy)',
+            fontWeight: '800',
+            lineHeight: '1.25',
+            margin: '0 0 6px 0',
+            letterSpacing: '-0.02em'
           }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              color: '#34d399',
-              fontSize: '0.74rem',
-              fontWeight: '700',
-              letterSpacing: '0.03em',
-              marginBottom: '6px',
-              backgroundColor: 'rgba(6, 78, 59, 0.45)',
-              padding: '3px 10px',
-              borderRadius: '6px',
-              backdropFilter: 'blur(6px)',
-              border: '1px solid rgba(52, 211, 153, 0.3)'
-            }}>
-              <ShieldCheck size={13} /> TSDC Verified: {regCode}
-            </div>
+            {doctor.name}
+          </h3>
 
-            <h3 style={{
-              fontSize: '1.6rem',
-              color: '#ffffff',
-              fontWeight: '800',
-              lineHeight: '1.2',
-              margin: '0 0 4px 0',
-              letterSpacing: '-0.02em'
-            }}>
-              {doctor.name}
-            </h3>
-
-            <div style={{
-              color: '#38bdf8',
-              fontSize: '0.92rem',
-              fontWeight: '700',
-              lineHeight: '1.35',
-              marginBottom: '4px'
-            }}>
-              {doctor.degree}
-            </div>
-
-            <div style={{
-              color: 'rgba(255, 255, 255, 0.82)',
-              fontSize: '0.82rem',
-              fontWeight: '500'
-            }}>
-              {theme.shortDesignation}
-            </div>
-          </div>
-        </div>
-
-        {/* Clean Card Bottom Strip */}
-        <div style={{
-          padding: '16px 22px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          backgroundColor: '#ffffff',
-          borderTop: '1px solid #f1f5f9'
-        }}>
+          {/* Degree */}
           <div style={{
+            color: 'var(--primary)',
+            fontSize: '0.92rem',
+            fontWeight: '700',
+            lineHeight: '1.35',
+            marginBottom: '4px'
+          }}>
+            {doctor.degree}
+          </div>
+
+          {/* Short Designation */}
+          <div style={{
+            color: 'var(--text-muted)',
+            fontSize: '0.84rem',
+            fontWeight: '500',
+            lineHeight: '1.45',
+            marginBottom: '18px'
+          }}>
+            {theme.shortDesignation}
+          </div>
+
+          {/* Card Bottom Action Bar */}
+          <div style={{
+            marginTop: 'auto',
+            paddingTop: '16px',
+            borderTop: '1px solid #f1f5f9',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            fontSize: '0.86rem',
-            fontWeight: '700',
-            color: 'var(--primary)'
+            justifyContent: 'space-between'
           }}>
-            <span>View Full Profile</span>
-            <ChevronRight size={16} />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
-            <a
-              href={`https://wa.me/917799376656?text=Hi%20Simply%20Smilez%2C%20I%20would%20like%20to%20consult%20with%20${encodeURIComponent(doctor.name)}.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-whatsapp btn-sm"
-              style={{ padding: '8px 12px', borderRadius: '8px' }}
-              title={`WhatsApp with ${doctor.name}`}
-            >
-              <MessageSquare size={14} />
-            </a>
-
-            <button
-              onClick={() => onOpenAppointment && onOpenAppointment()}
-              className="btn btn-primary btn-sm"
-              style={{ padding: '8px 14px', borderRadius: '8px', fontSize: '0.82rem' }}
-            >
-              <Calendar size={13} /> Book
-            </button>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '0.9rem',
+              fontWeight: '800',
+              color: 'var(--primary)'
+            }}>
+              <span>View Full Profile</span>
+              <ChevronRight size={17} />
+            </div>
           </div>
         </div>
       </div>

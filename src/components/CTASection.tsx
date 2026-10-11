@@ -90,10 +90,10 @@ export default function CTASection({ onOpenAppointment }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Phone size={17} style={{ color: '#00b4d8' }} />
                 <span>
-                  <strong>Direct Helpline:</strong>{' '}
-                  <a href={`tel:${clinicInfo.phones[0].value}`} style={{ color: '#ffffff', fontWeight: '700' }}>{clinicInfo.phones[0].display}</a>
-                  <span style={{ margin: '0 6px', color: '#64748b' }}>/</span>
+                  <strong>Call Us:</strong>{' '}
                   <a href={`tel:${clinicInfo.phones[1].value}`} style={{ color: '#ffffff', fontWeight: '700' }}>{clinicInfo.phones[1].display}</a>
+                  <span style={{ margin: '0 6px', color: '#64748b' }}>/</span>
+                  <a href={`tel:${clinicInfo.phones[0].value}`} style={{ color: '#ffffff', fontWeight: '700' }}>{clinicInfo.phones[0].display}</a>
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>

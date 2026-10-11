@@ -89,14 +89,13 @@ export default function HomePage() {
     .map((slug) => servicesData.find((s) => s.slug === slug))
     .filter(Boolean);
 
-  // Auto-advance hero slider
+  // Auto-advance hero slider continuously every 5 seconds
   useEffect(() => {
-    if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5500);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, heroSlides.length]);
+  }, [heroSlides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -116,16 +115,14 @@ export default function HomePage() {
         style={{
           width: '100%',
           maxWidth: '100%',
-          margin: '0 0 36px 0',
+          margin: '0',
           padding: '0',
           boxSizing: 'border-box',
           position: 'relative'
         }}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
       >
         <div className="hero-slider-main-box">
-          {/* Background Slide Images with Crossfade */}
+          {/* Background Slide Images with Fast Smooth Crossfade */}
           {heroSlides.map((slide, index) => {
             const isActive = index === currentSlide;
             return (
@@ -136,8 +133,8 @@ export default function HomePage() {
                   inset: 0,
                   opacity: isActive ? 1 : 0,
                   visibility: isActive ? 'visible' : 'hidden',
-                  transform: isActive ? 'scale(1)' : 'scale(1.04)',
-                  transition: 'opacity 0.8s ease-in-out, transform 1.2s ease-out',
+                  transform: isActive ? 'scale(1)' : 'scale(1.05)',
+                  transition: 'opacity 0.45s ease-in-out, transform 0.55s ease-out',
                   zIndex: isActive ? 1 : 0
                 }}
               >
@@ -152,25 +149,31 @@ export default function HomePage() {
                     objectPosition: 'center'
                   }}
                 />
-                {/* Dark Luxury Gradient Overlay - Darker on the right for right-aligned text contrast */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(90deg, rgba(8, 18, 38, 0.25) 0%, rgba(8, 18, 38, 0.6) 38%, rgba(8, 18, 38, 0.92) 75%, rgba(8, 18, 38, 0.97) 100%)'
-                }} />
+                {/* Dark Luxury Gradient Overlay - Balanced for desktop readability while staying light on mobile */}
+                <div
+                  className="hero-dark-overlay"
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(90deg, rgba(8, 18, 38, 0.12) 0%, rgba(8, 18, 38, 0.42) 38%, rgba(8, 18, 38, 0.78) 75%, rgba(8, 18, 38, 0.88) 100%)'
+                  }}
+                />
                 {/* Subtle Radial Mesh Glow */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'radial-gradient(circle at 80% 30%, rgba(2, 132, 199, 0.25) 0%, transparent 60%)',
-                  pointerEvents: 'none'
-                }} />
+                <div
+                  className="hero-blue-glow-overlay"
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'radial-gradient(circle at 80% 30%, rgba(2, 132, 199, 0.08) 0%, transparent 60%)',
+                    pointerEvents: 'none'
+                  }}
+                />
               </div>
             );
           })}
 
-          {/* Active Slide Content - Positioned on Right-Hand Side */}
-          <div className="hero-slider-content-wrap">
+          {/* Active Slide Content - Animated reveal on slide change */}
+          <div key={`hero-content-${currentSlide}`} className="hero-slider-content-wrap animate-slide-content-in">
             <div style={{
               maxWidth: '780px',
               width: '100%',
@@ -182,18 +185,18 @@ export default function HomePage() {
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: 'rgba(0, 180, 216, 0.15)',
-                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  gap: '10px',
+                  backgroundColor: 'rgba(2, 20, 50, 0.55)',
+                  border: '1px solid rgba(56, 189, 248, 0.55)',
                   padding: '5px 14px',
                   borderRadius: '9999px',
-                  color: '#38bdf8',
+                  color: '#7ee8ff',
                   fontSize: '0.8rem',
-                  fontWeight: '800',
+                  fontWeight: '600',
                   textTransform: 'uppercase',
                   letterSpacing: '0.06em',
                   marginBottom: '16px',
-                  backdropFilter: 'blur(10px)'
+                  backdropFilter: 'blur(14px)'
                 }}
               >
                 <span className="beacon-dot" />
@@ -211,9 +214,11 @@ export default function HomePage() {
               }} className="hero-title animate-hero-title">
                 {heroSlides[currentSlide].titleLine1}{' '}
                 <span style={{
-                  background: 'linear-gradient(135deg, #38bdf8 0%, #00b4d8 50%, #10b981 100%)',
+                  background: 'linear-gradient(135deg, #6ee7ff 0%, #38bdf8 45%, #34d399 100%)',
                   WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: 'none',
+                  filter: 'drop-shadow(0 0 8px rgba(56,189,248,0.35))'
                 }}>
                   {heroSlides[currentSlide].titleHighlight}
                 </span>
@@ -224,7 +229,7 @@ export default function HomePage() {
                 className="animate-hero-desc"
                 style={{
                   fontSize: '1.14rem',
-                  color: '#cbd5e1',
+                  color: '#ffffffff',
                   lineHeight: '1.65',
                   marginBottom: '28px',
                   maxWidth: '680px'
@@ -316,7 +321,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Slider Navigation: Prev/Next and Dots */}
+          {/* Slider Navigation: Pagination Dots */}
           <div
             className="animate-hero-nav"
             style={{
@@ -326,89 +331,26 @@ export default function HomePage() {
               zIndex: 20,
               display: 'flex',
               alignItems: 'center',
-              gap: '12px'
+              gap: '6px'
             }}
           >
-            {/* Prev Arrow Button */}
-            <button
-              onClick={prevSlide}
-              aria-label="Previous Slide"
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(15, 23, 42, 0.65)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary)';
-                e.currentTarget.style.borderColor = 'var(--primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.65)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-              }}
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            {/* Pagination Dots */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {heroSlides.map((_, dotIdx) => (
-                <button
-                  key={dotIdx}
-                  onClick={() => setCurrentSlide(dotIdx)}
-                  aria-label={`Go to slide ${dotIdx + 1}`}
-                  style={{
-                    width: dotIdx === currentSlide ? '28px' : '9px',
-                    height: '9px',
-                    borderRadius: '9999px',
-                    backgroundColor: dotIdx === currentSlide ? '#38bdf8' : 'rgba(255, 255, 255, 0.35)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    padding: 0
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Next Arrow Button */}
-            <button
-              onClick={nextSlide}
-              aria-label="Next Slide"
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(15, 23, 42, 0.65)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--primary)';
-                e.currentTarget.style.borderColor = 'var(--primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(15, 23, 42, 0.65)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-              }}
-            >
-              <ChevronRight size={20} />
-            </button>
+            {heroSlides.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                onClick={() => setCurrentSlide(dotIdx)}
+                aria-label={`Go to slide ${dotIdx + 1}`}
+                style={{
+                  width: dotIdx === currentSlide ? '28px' : '9px',
+                  height: '9px',
+                  borderRadius: '9999px',
+                  backgroundColor: dotIdx === currentSlide ? '#38bdf8' : 'rgba(255, 255, 255, 0.35)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  padding: 0
+                }}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -417,7 +359,7 @@ export default function HomePage() {
       {/* 2. WELCOME & ABOUT SECTION (PORCELAIN AMBIENT BACKDROP) */}
       {/* ========================================================= */}
       <section style={{
-        padding: '100px 0 90px 0',
+        padding: '48px 0 48px 0',
         background: 'linear-gradient(180deg, #f8fbfe 0%, #ffffff 100%)',
         position: 'relative',
         overflow: 'hidden'
@@ -445,14 +387,9 @@ export default function HomePage() {
         }} />
 
         <div className="site-container" style={{ position: 'relative', zIndex: 2 }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 0.85fr)',
-            gap: '56px',
-            alignItems: 'center'
-          }} className="about-grid-responsive">
+          <div style={{ maxWidth: '980px', margin: '0 auto' }}>
 
-            {/* Left Detailed Copy & Clinical Pillars */}
+            {/* About Copy & Clinical Pillars */}
             <div>
               {/* Eyebrow badge */}
               <div style={{
@@ -647,116 +584,59 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Local Area Anchor Pill Strip */}
+              {/* Local Area Anchor Pill Strip — Highlighted */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '10px',
                 flexWrap: 'wrap',
                 marginBottom: '28px',
-                padding: '10px 16px',
-                backgroundColor: '#f1f5f9',
-                borderRadius: '12px',
-                fontSize: '0.84rem',
-                color: 'var(--navy)'
+                padding: '12px 18px',
+                background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%)',
+                border: '1.5px solid rgba(2, 132, 199, 0.25)',
+                borderRadius: '14px',
+                fontSize: '0.88rem',
+                color: 'var(--navy)',
+                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.08)'
               }}>
-                <MapPin size={16} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                <span style={{ fontWeight: '700' }}>Serving:</span>
-                <span>Shaikpet • Manikonda • Kondapur • Jubilee Hills • Gachibowli</span>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(2, 132, 199, 0.12)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <MapPin size={16} style={{ color: '#0284c7' }} />
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontWeight: '800', color: '#0284c7', whiteSpace: 'nowrap' }}>Serving Areas:</span>
+                  {['Shaikpet', 'Manikonda', 'Kondapur', 'Jubilee Hills', 'Gachibowli'].map((area, i) => (
+                    <span key={i} style={{
+                      background: 'rgba(2, 132, 199, 0.1)',
+                      color: '#0369a1',
+                      padding: '2px 10px',
+                      borderRadius: '9999px',
+                      fontWeight: '700',
+                      fontSize: '0.82rem',
+                      whiteSpace: 'nowrap',
+                      border: '1px solid rgba(2, 132, 199, 0.2)'
+                    }}>{area}</span>
+                  ))}
+                </div>
               </div>
 
               {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-                <button
-                  onClick={openAppointment}
+                <Link
+                  href="/about"
                   className="btn btn-primary btn-md"
                   style={{ boxShadow: '0 6px 20px rgba(2, 132, 199, 0.35)' }}
                 >
-                  <Calendar size={17} /> Book Appointment
-                </button>
-                <a
-                  href={clinicInfo.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-whatsapp btn-md"
-                >
-                  <MessageSquare size={17} /> WhatsApp Direct
-                </a>
-                <Link
-                  href="/about"
-                  className="btn btn-secondary btn-md"
-                >
                   More About Us <ArrowRight size={16} />
                 </Link>
-              </div>
-            </div>
-
-            {/* Right Image Showcase Card (Position Changed to Right) */}
-            <div style={{ position: 'relative' }}>
-              {/* Outer Decorative Glow Container */}
-              <div className="about-image-card">
-                <div style={{
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  backgroundColor: '#ffffff',
-                  position: 'relative'
-                }}>
-                  <img
-                    src="/images/bg_3.webp"
-                    alt="Happy Patient at Simply Smilez Dental Clinic Shaikpet"
-                    style={{
-                      transition: 'transform 0.6s ease'
-                    }}
-                  />
-                  {/* Subtle Gradient Shade at bottom of image */}
-                  <div style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(180deg, transparent 60%, rgba(15, 23, 42, 0.75) 100%)'
-                  }} />
-
-                  {/* Doctor / Specialist Overlay Title at image bottom */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '18px',
-                    left: '20px',
-                    right: '20px',
-                    zIndex: 5,
-                    color: '#ffffff'
-                  }}>
-                    <div style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Simply Smilez Dental Clinic
-                    </div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: '800' }}>
-                      Compassionate & Painless Treatment Experience
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Rating Pill */}
-                <div className="about-floating-pill">
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '10px',
-                    backgroundColor: '#fef3c7',
-                    color: '#f59e0b',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    <Star size={20} fill="#f59e0b" />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.92rem', fontWeight: '800', color: 'var(--navy)' }}>
-                      4.9 / 5.0 Rating
-                    </div>
-                    <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                      350+ Google Reviews
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -769,8 +649,8 @@ export default function HomePage() {
       {/* ========================================================= */}
       <section
         style={{
-          padding: '100px 0 95px 0',
-          background: 'linear-gradient(180deg, #f0f7ff 0%, #e6f2fe 100%)',
+          padding: '52px 0 55px 0',
+          background: 'linear-gradient(180deg, #e1eefc 0%, #d4e7f8 50%, #c9e0f5 100%)',
           position: 'relative',
           overflow: 'hidden'
         }}
@@ -781,24 +661,24 @@ export default function HomePage() {
           position: 'absolute',
           top: '-100px',
           right: '-100px',
-          width: '450px',
-          height: '450px',
+          width: '500px',
+          height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(2, 132, 199, 0.16) 0%, transparent 70%)',
           pointerEvents: 'none'
         }} />
         <div style={{
           position: 'absolute',
           bottom: '-100px',
           left: '-100px',
-          width: '450px',
-          height: '450px',
+          width: '500px',
+          height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(2, 132, 199, 0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, transparent 70%)',
           pointerEvents: 'none'
         }} />
 
-        <div className="site-container" style={{ position: 'relative', zIndex: 2 }}>
+        <div className="site-container services-container-wide" style={{ position: 'relative', zIndex: 2 }}>
           {/* Section Header */}
           <div className="section-header" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 54px auto' }}>
             <span className="badge-pill badge-primary" style={{ marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -825,19 +705,19 @@ export default function HomePage() {
           </div>
 
           {/* Grid of 6 Featured Services: Exactly 2 Rows and 3 Columns (Desktop & Tablet) */}
-          <div className="services-2x3-grid" style={{ marginBottom: '50px' }}>
+          <div className="services-2x3-grid" style={{ marginBottom: '36px' }}>
             {featuredServices.map((service, idx) => (
               <ServiceCard key={service.slug} service={service} index={idx} />
             ))}
           </div>
 
           {/* Mobile Only: Touch-Friendly Featured Services Carousel Slider */}
-          <div style={{ marginBottom: '40px' }}>
+          <div style={{ marginBottom: '28px' }}>
             <MobileServicesSlider services={featuredServices} />
           </div>
 
           {/* Bottom Action Button */}
-          <div style={{ textAlign: 'center', marginTop: '12px' }}>
+          <div style={{ textAlign: 'center', marginTop: '8px' }}>
             <Link
               href="/all-services"
               className="btn btn-primary btn-lg"
@@ -858,12 +738,15 @@ export default function HomePage() {
       {/* ========================================================= */}
       {/* 5. WHY CHOOSE SIMPLY SMILEZ (SLATE PEARL BACKDROP) */}
       {/* ========================================================= */}
-      <section style={{
-        padding: '100px 0 95px 0',
-        background: 'linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <section
+        id="why-choose-section"
+        style={{
+          padding: '50px 0 80px 0',
+          background: 'linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
         {/* Subtle background ambient mesh */}
         <div style={{
           position: 'absolute',
@@ -886,7 +769,7 @@ export default function HomePage() {
           pointerEvents: 'none'
         }} />
 
-        <div className="site-container" style={{ position: 'relative', zIndex: 2 }}>
+        <div className="site-container services-container-wide" style={{ position: 'relative', zIndex: 2 }}>
           {/* Section Header */}
           <div className="section-header" style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto 56px auto' }}>
             <span className="badge-pill badge-primary" style={{ marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -912,161 +795,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Asymmetric Redesigned Layout */}
-          <div className="why-choose-layout">
-
-            {/* Left Spotlight Trust Anchor Card */}
-            <div style={{
-              background: 'linear-gradient(150deg, #091322 0%, #0d2342 55%, #081528 100%)',
-              borderRadius: '26px',
-              padding: '38px 34px',
-              color: '#ffffff',
-              boxShadow: '0 20px 50px -10px rgba(15, 23, 42, 0.28)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              {/* Decorative background orb */}
-              <div style={{
-                position: 'absolute',
-                top: '-40px',
-                right: '-40px',
-                width: '180px',
-                height: '180px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(2, 132, 199, 0.3) 0%, transparent 70%)',
-                pointerEvents: 'none'
-              }} />
-
-              <div>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  backgroundColor: 'rgba(56, 189, 248, 0.12)',
-                  border: '1px solid rgba(56, 189, 248, 0.35)',
-                  padding: '5px 14px',
-                  borderRadius: '9999px',
-                  color: '#38bdf8',
-                  fontSize: '0.78rem',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  marginBottom: '20px'
-                }}>
-                  <Sparkles size={13} />
-                  <span>The Simply Smilez Standard</span>
-                </div>
-
-                <h3 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: '900',
-                  lineHeight: '1.25',
-                  marginBottom: '16px',
-                  color: '#ffffff'
-                }}>
-                  Patient-First Care Rooted in <span style={{ color: '#38bdf8' }}>Clinical Precision</span>
-                </h3>
-
-                <p style={{
-                  fontSize: '0.94rem',
-                  color: '#cbd5e1',
-                  lineHeight: '1.7',
-                  marginBottom: '28px'
-                }}>
-                  We combine verified senior MDS specialist expertise with state-of-the-art laser technology, ensuring every treatment is completely painless, transparent, and tailored to your lifelong oral health.
-                </p>
-
-                {/* 4 Stats Grid */}
-                <div className="why-spotlight-stats-grid">
-                  <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '1.55rem', fontWeight: '900', color: '#38bdf8', marginBottom: '2px' }}>
-                      9+ Yrs
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '600' }}>
-                      Clinical Practice in Shaikpet
-                    </div>
-                  </div>
-
-                  <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '1.55rem', fontWeight: '900', color: '#f59e0b', marginBottom: '2px' }}>
-                      4.9 ★
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '600' }}>
-                      350+ Google Reviews
-                    </div>
-                  </div>
-
-                  <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '1.55rem', fontWeight: '900', color: '#10b981', marginBottom: '2px' }}>
-                      100%
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '600' }}>
-                      Hospital-Grade Sterilization
-                    </div>
-                  </div>
-
-                  <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    padding: '16px'
-                  }}>
-                    <div style={{ fontSize: '1.55rem', fontWeight: '900', color: '#a855f7', marginBottom: '2px' }}>
-                      2 MDS
-                    </div>
-                    <div style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: '600' }}>
-                      Senior Specialists On-Site
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons in Spotlight */}
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <button
-                  onClick={openAppointment}
-                  className="btn btn-primary btn-md"
-                  style={{
-                    boxShadow: '0 6px 20px rgba(2, 132, 199, 0.45)',
-                    flexGrow: 1,
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Calendar size={17} /> Book Appointment
-                </button>
-                <a
-                  href={clinicInfo.whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-whatsapp btn-md"
-                  style={{ flexGrow: 1, justifyContent: 'center' }}
-                >
-                  <MessageSquare size={17} /> WhatsApp Direct
-                </a>
-              </div>
-            </div>
-
-            {/* Right 6 Interactive Feature Cards (2 Cols x 3 Rows) */}
-            <div className="why-card-grid">
+          {/* Feature Cards Grid (3 Columns on Desktop, 2 on Tablet, 1 on Mobile) */}
+          <div className="why-card-grid">
 
               {/* Card 1 */}
               <div className="why-card-item">
@@ -1227,8 +957,7 @@ export default function HomePage() {
             </div>
 
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* ========================================================= */}
       {/* 6. CONSULTATION CTA BANNER */}
@@ -1283,7 +1012,7 @@ export default function HomePage() {
       {/* ========================================================= */}
       <section
         style={{
-          padding: '100px 0',
+          padding: '80px 0 45px 0',
           background: 'linear-gradient(180deg, #f0f7ff 0%, #f8fafc 100%)',
           position: 'relative',
           overflow: 'hidden'
@@ -1334,46 +1063,6 @@ export default function HomePage() {
             >
               Direct personalized care with verified MDS specialists having 9+ years of clinical excellence and 50+ consulting hospital associations across Hyderabad.
             </p>
-
-            {/* Credential Highlights Strip */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                gap: '10px',
-                marginTop: '8px'
-              }}
-            >
-              {[
-                { icon: ShieldCheck, text: 'TSDC Verified Specialists', color: '#0284c7' },
-                { icon: Award, text: 'Certified Invisalign® Provider', color: '#059669' },
-                { icon: Users, text: '50+ Consulting Clinics Reach', color: '#0284c7' },
-                { icon: Star, text: '4.9 ★ Rating (350+ Reviews)', color: '#d97706' }
-              ].map((item, idx) => {
-                const IconComponent = item.icon;
-                return (
-                  <span
-                    key={idx}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '7px',
-                      padding: '6px 14px',
-                      backgroundColor: '#ffffff',
-                      borderRadius: '9999px',
-                      fontSize: '0.82rem',
-                      fontWeight: '700',
-                      color: 'var(--navy)',
-                      boxShadow: '0 2px 8px rgba(15, 23, 42, 0.05)',
-                      border: '1px solid rgba(226, 232, 240, 0.9)'
-                    }}
-                  >
-                    <IconComponent size={14} style={{ color: item.color }} /> {item.text}
-                  </span>
-                );
-              })}
-            </div>
           </div>
 
           {/* 2-Column Doctor Cards Grid */}
@@ -1383,88 +1072,21 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Bottom Specialist Care Assurance Strip */}
-          <div
-            style={{
-              maxWidth: '1100px',
-              margin: '40px auto 0 auto',
-              backgroundColor: '#ffffff',
-              borderRadius: '20px',
-              padding: '24px 32px',
-              border: '1px solid rgba(2, 132, 199, 0.18)',
-              boxShadow: '0 8px 24px -6px rgba(2, 132, 199, 0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '20px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 500px' }}>
-              <div
-                style={{
-                  width: '46px',
-                  height: '46px',
-                  borderRadius: '12px',
-                  backgroundColor: 'var(--primary-light)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}
-              >
-                <ShieldCheck size={24} style={{ color: 'var(--primary)' }} />
-              </div>
-              <div>
-                <div style={{ fontWeight: '800', color: 'var(--navy)', fontSize: '0.98rem' }}>
-                  Direct Specialist Care Guarantee
-                </div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginTop: '2px' }}>
-                  Every diagnosis, braces adjustment, root canal, and implant procedure is personally performed by our Senior MDS Doctors.
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <a
-                href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`}
-                className="btn btn-secondary btn-sm"
-                style={{
-                  fontWeight: '700',
-                  fontSize: '0.84rem',
-                  padding: '9px 16px',
-                  borderRadius: '10px'
-                }}
-              >
-                <Phone size={14} /> Call {clinicInfo.phones?.[0]?.display || '96033 38904'}
-              </a>
-              <button
-                onClick={openAppointment}
-                className="btn btn-primary btn-sm"
-                style={{
-                  fontWeight: '700',
-                  fontSize: '0.84rem',
-                  padding: '9px 18px',
-                  borderRadius: '10px'
-                }}
-              >
-                <Calendar size={14} /> Book Consultation
-              </button>
-            </div>
-          </div>
-
         </div>
       </section>
 
       {/* ========================================================= */}
       {/* 9. CLINIC GALLERY SECTION (PEARL AMBIENT BACKDROP) */}
       {/* ========================================================= */}
-      <section style={{
-        padding: '95px 0',
-        background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <section
+        id="clinic-gallery-section"
+        style={{
+          padding: '45px 0 35px 0',
+          background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
         <div className="site-container">
           <div className="section-header">
             <span className="section-tag badge-cyan">Inside Our Clinic</span>
@@ -1476,12 +1098,18 @@ export default function HomePage() {
 
           <GalleryViewer limit={6} />
 
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+          <div style={{ textAlign: 'center', marginTop: '24px' }}>
             <Link
               href="/gallery"
-              className="btn btn-secondary btn-lg"
+              className="btn btn-primary btn-lg"
+              style={{
+                boxShadow: '0 8px 25px rgba(2, 132, 199, 0.35)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
             >
-              View Full Clinic Gallery (17 Photos) <ChevronRight size={18} />
+              View Full Clinic Gallery <ChevronRight size={18} />
             </Link>
           </div>
         </div>
@@ -1492,7 +1120,7 @@ export default function HomePage() {
       {/* ========================================================= */}
       <section
         style={{
-          padding: '95px 0',
+          padding: '48px 0 38px 0',
           background: 'linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 40%, #f8fafc 100%)',
           position: 'relative',
           overflow: 'hidden'
@@ -1529,12 +1157,9 @@ export default function HomePage() {
             >
               <Sparkles size={14} /> Verified Patient Reviews
             </span>
-            <h2 className="section-title" style={{ fontSize: '2.65rem', fontWeight: '800', letterSpacing: '-0.025em', marginBottom: '14px' }}>
+            <h2 className="section-title" style={{ fontSize: '2.65rem', fontWeight: '800', letterSpacing: '-0.025em', marginBottom: '0' }}>
               What Our Patients Say About Us
             </h2>
-            <p className="section-desc" style={{ fontSize: '1.05rem', color: 'var(--text-body)', lineHeight: '1.7' }}>
-              Real stories of painless treatments, smile transformations, and gentle care from families across Hyderabad who trust Simply Smilez Dental Clinic.
-            </p>
           </div>
 
           <TestimonialSlider />
@@ -1545,7 +1170,7 @@ export default function HomePage() {
       {/* 11. FREQUENTLY ASKED QUESTIONS (ALABASTER PEARL TONE) */}
       {/* ========================================================= */}
       <section style={{
-        padding: '95px 0',
+        padding: '44px 0 95px 0',
         background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
         position: 'relative',
         overflow: 'hidden'
@@ -1576,7 +1201,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <FAQAccordion faqs={mainFaqs} initialLimit={6} showSearch={true} />
+          <FAQAccordion faqs={mainFaqs} initialLimit={4} showSearch={false} />
         </div>
       </section>
 

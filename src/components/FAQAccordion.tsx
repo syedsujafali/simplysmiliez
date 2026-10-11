@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { clinicInfo } from '@/data/clinicData';
 
-export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch = true }) {
+export default function FAQAccordion({ faqs = [], initialLimit = 4, showSearch = false }) {
   const [openIndex, setOpenIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -32,7 +32,7 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
     return matchesSearch && matchesCategory;
   });
 
-  // Determine items to display: If searching or category is picked, show all matching; otherwise limit to 6 unless expanded
+  // Determine items to display: If searching or category is picked, show all matching; otherwise limit to initialLimit unless expanded
   const isFiltering = searchTerm.trim().length > 0 || selectedCategory !== 'All';
   const displayedFaqs = (isFiltering || isExpanded) 
     ? filteredFaqs 
@@ -42,12 +42,10 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
     setOpenIndex(openIndex === idx ? null : idx);
   };
 
-  const remainingCount = filteredFaqs.length - initialLimit;
-
   return (
     <div style={{ maxWidth: '880px', margin: '0 auto', width: '100%' }}>
       
-      {/* Search & Category Filter Bar */}
+      {/* Search & Category Filter Bar (Only if showSearch is explicitly enabled) */}
       {showSearch && (
         <div style={{ marginBottom: '32px' }}>
           {/* Search Box */}
@@ -144,7 +142,6 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
         ) : (
           displayedFaqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
-            const qNum = String(idx + 1).padStart(2, '0');
 
             return (
               <div
@@ -179,19 +176,20 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
                   aria-expanded={isOpen}
                 >
                   <span style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                    {/* Clear, Visible Blue Dot Indicator */}
                     <span style={{
-                      backgroundColor: isOpen ? 'var(--primary)' : 'var(--primary-light)',
-                      color: isOpen ? '#ffffff' : 'var(--primary-dark)',
-                      fontSize: '0.74rem',
-                      fontWeight: '800',
-                      padding: '4px 8px',
-                      borderRadius: '6px',
-                      marginTop: '2px',
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      backgroundColor: isOpen ? 'var(--primary)' : '#0284c7',
+                      boxShadow: isOpen 
+                        ? '0 0 0 3px rgba(2, 132, 199, 0.28)' 
+                        : '0 0 0 2px rgba(2, 132, 199, 0.2)',
                       flexShrink: 0,
-                      transition: 'all 0.2s ease'
-                    }}>
-                      Q{qNum}
-                    </span>
+                      marginTop: '7px',
+                      display: 'inline-block',
+                      transition: 'all 0.25s ease'
+                    }} />
                     <span style={{ lineHeight: '1.4' }}>{faq.question}</span>
                   </span>
 
@@ -217,7 +215,7 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
 
                 {isOpen && (
                   <div style={{
-                    padding: '16px 24px 24px 58px',
+                    padding: '16px 24px 24px 48px',
                     color: 'var(--text-body)',
                     fontSize: '0.94rem',
                     lineHeight: '1.75',
@@ -228,7 +226,7 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
                     {/* Left Accent Indicator Bar */}
                     <div style={{
                       position: 'absolute',
-                      left: '32px',
+                      left: '28px',
                       top: '20px',
                       bottom: '24px',
                       width: '3px',
@@ -250,13 +248,13 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
         <div style={{ textAlign: 'center', marginTop: '36px' }}>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="btn btn-secondary btn-lg"
+            className="btn btn-primary btn-lg"
             style={{
-              padding: '13px 28px',
+              padding: '13px 32px',
               borderRadius: '9999px',
-              fontSize: '0.94rem',
+              fontSize: '0.96rem',
               fontWeight: '700',
-              boxShadow: '0 4px 16px rgba(15, 23, 42, 0.06)',
+              boxShadow: '0 8px 25px rgba(2, 132, 199, 0.35)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px'
@@ -268,68 +266,12 @@ export default function FAQAccordion({ faqs = [], initialLimit = 6, showSearch =
               </>
             ) : (
               <>
-                Show More FAQs (+{remainingCount} More Questions) <ChevronDown size={18} />
+                Show More FAQs <ChevronDown size={18} />
               </>
             )}
           </button>
         </div>
       )}
-
-      {/* Still Have Questions Reassurance Box */}
-      <div style={{
-        marginTop: '50px',
-        backgroundColor: '#f8fafc',
-        borderRadius: '22px',
-        padding: '28px 32px',
-        border: '1px solid rgba(226, 232, 240, 0.95)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '20px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 380px' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '14px',
-            backgroundColor: 'var(--primary-light)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0
-          }}>
-            <HelpCircle size={24} style={{ color: 'var(--primary)' }} />
-          </div>
-          <div>
-            <div style={{ fontSize: '1.02rem', fontWeight: '800', color: 'var(--navy)' }}>
-              Still have questions about your dental treatment?
-            </div>
-            <div style={{ fontSize: '0.86rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Speak directly with our senior dental specialists or coordinators.
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <a
-            href={`tel:${clinicInfo.phones?.[0]?.value || '+919603338904'}`}
-            className="btn btn-secondary btn-sm"
-            style={{ borderRadius: '10px', padding: '9px 16px', fontWeight: '700' }}
-          >
-            <Phone size={14} /> 96033 38904
-          </a>
-          <a
-            href={clinicInfo.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-whatsapp btn-sm"
-            style={{ borderRadius: '10px', padding: '9px 16px', fontWeight: '700' }}
-          >
-            <MessageSquare size={14} /> Ask on WhatsApp
-          </a>
-        </div>
-      </div>
 
     </div>
   );

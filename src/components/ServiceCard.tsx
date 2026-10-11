@@ -24,9 +24,18 @@ export default function ServiceCard({ service, index = 0 }) {
   const formattedNumber = index < 9 ? `0${index + 1}` : `${index + 1}`;
 
   return (
-    <div className="luxury-service-card">
+    <Link
+      href={`/${service.slug}`}
+      className="luxury-service-card"
+      style={{
+        textDecoration: 'none',
+        color: 'inherit',
+        display: 'flex',
+        cursor: 'pointer'
+      }}
+    >
       {/* Image Stage */}
-      <Link href={`/${service.slug}`} className="service-img-wrap" style={{ display: 'block', position: 'relative' }}>
+      <div className="service-img-wrap" style={{ display: 'block', position: 'relative' }}>
         <img
           src={service.image}
           alt={service.title}
@@ -117,30 +126,31 @@ export default function ServiceCard({ service, index = 0 }) {
         }}>
           {formattedNumber}
         </div>
-      </Link>
+      </div>
 
       {/* Card Content Body */}
-      <div style={{ padding: '24px 26px 22px 26px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+      <div style={{ padding: '22px 24px 20px 24px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <h3 style={{
-          fontSize: '1.28rem',
+          fontSize: '1.24rem',
           fontWeight: '800',
           marginBottom: '10px',
           lineHeight: '1.3'
         }}>
-          <Link
-            href={`/${service.slug}`}
-            className="service-title-link"
-          >
+          <span className="service-title-link">
             {service.title}
-          </Link>
+          </span>
         </h3>
 
         <p style={{
-          fontSize: '0.91rem',
+          fontSize: '0.9rem',
           color: 'var(--text-muted)',
-          lineHeight: '1.62',
-          marginBottom: '22px',
-          flexGrow: 1
+          lineHeight: '1.6',
+          marginBottom: '20px',
+          flexGrow: 1,
+          display: '-webkit-box',
+          WebkitLineClamp: 4,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
         }}>
           {service.shortDesc}
         </p>
@@ -153,10 +163,10 @@ export default function ServiceCard({ service, index = 0 }) {
           paddingTop: '16px',
           borderTop: '1px solid #f1f5f9'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#0f766e', fontWeight: '700' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#0f766e', fontWeight: '700' }}>
             <span style={{
-              width: '8px',
-              height: '8px',
+              width: '7px',
+              height: '7px',
               borderRadius: '50%',
               backgroundColor: '#10b981',
               display: 'inline-block',
@@ -165,24 +175,23 @@ export default function ServiceCard({ service, index = 0 }) {
             <span>MDS Certified Care</span>
           </div>
 
-          <Link
-            href={`/${service.slug}`}
+          <div
             className="service-cta-btn"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '42px',
-              height: '42px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%'
             }}
-            aria-label={`View details for ${service.title}`}
+            aria-hidden="true"
           >
-            <ArrowRight size={18} style={{ display: 'block', margin: 'auto' }} />
-          </Link>
+            <ArrowRight size={17} style={{ display: 'block', margin: 'auto' }} />
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

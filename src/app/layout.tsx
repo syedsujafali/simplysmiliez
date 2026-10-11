@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaJson) }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <LayoutWrapper>
           {children}
         </LayoutWrapper>

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { testimonialsData } from '@/data/testimonialsData';
-import { Star, Quote, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Star, Quote, CheckCircle2 } from 'lucide-react';
 
 export default function TestimonialSlider() {
   const count = testimonialsData.length;
@@ -12,6 +12,7 @@ export default function TestimonialSlider() {
   const [currentIndex, setCurrentIndex] = useState(count);
   const [isAnimated, setIsAnimated] = useState(true);
   const [cardWidth, setCardWidth] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const containerRef = useRef(null);
   const trackRef = useRef(null);
@@ -40,6 +41,17 @@ export default function TestimonialSlider() {
     setIsAnimated(true);
     setCurrentIndex((prev) => prev - 1);
   };
+
+  // Automatic scrolling every 3.6 seconds (pauses when user hovers to read)
+  useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 3600);
+
+    return () => clearInterval(timer);
+  }, [isPaused, count]);
 
   // Seamless jump when reaching loop bounds
   const handleTransitionEnd = () => {
@@ -73,6 +85,7 @@ export default function TestimonialSlider() {
   const touchEndX = useRef(0);
 
   const handleTouchStart = (e) => {
+    setIsPaused(true);
     touchStartX.current = e.targetTouches[0].clientX;
   };
 
@@ -81,6 +94,7 @@ export default function TestimonialSlider() {
   };
 
   const handleTouchEnd = () => {
+    setIsPaused(false);
     if (touchStartX.current - touchEndX.current > 50) {
       nextSlide();
     }
@@ -90,17 +104,18 @@ export default function TestimonialSlider() {
   };
 
   return (
-    <div style={{ width: '100%', position: 'relative' }}>
-      
-      {/* Top Controls & Rating Summary Bar */}
+    <div 
+      style={{ width: '100%', position: 'relative' }}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Top Rating Summary Bar */}
       <div 
         className="testimonial-controls-bar"
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '16px',
+          justifyContent: 'center',
           marginBottom: '28px',
           padding: '0 4px'
         }}
@@ -113,7 +128,7 @@ export default function TestimonialSlider() {
             alignItems: 'center',
             gap: '12px',
             backgroundColor: '#ffffff',
-            padding: '8px 18px',
+            padding: '8px 22px',
             borderRadius: '9999px',
             boxShadow: '0 4px 14px rgba(15, 23, 42, 0.05)',
             border: '1px solid rgba(226, 232, 240, 0.9)'
@@ -130,89 +145,6 @@ export default function TestimonialSlider() {
           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600' }}>
             • 350+ Google Reviews
           </span>
-        </div>
-
-        {/* Navigation Arrows & Counter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{
-            fontSize: '0.84rem',
-            fontWeight: '800',
-            color: 'var(--navy)',
-            marginRight: '6px',
-            backgroundColor: '#ffffff',
-            padding: '6px 14px',
-            borderRadius: '9999px',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
-            boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)'
-          }}>
-            {String(activeRealIndex + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
-          </span>
-
-          <button
-            onClick={prevSlide}
-            style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              border: '1px solid rgba(226, 232, 240, 0.9)',
-              color: 'var(--navy)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(15, 23, 42, 0.06)',
-              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary)';
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.borderColor = 'var(--primary)';
-              e.currentTarget.style.transform = 'scale(1.06)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.color = 'var(--navy)';
-              e.currentTarget.style.borderColor = 'rgba(226, 232, 240, 0.9)';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-            aria-label="Previous Review"
-          >
-            <ChevronLeft size={22} />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              border: '1px solid rgba(226, 232, 240, 0.9)',
-              color: 'var(--navy)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(15, 23, 42, 0.06)',
-              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary)';
-              e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.borderColor = 'var(--primary)';
-              e.currentTarget.style.transform = 'scale(1.06)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.color = 'var(--navy)';
-              e.currentTarget.style.borderColor = 'rgba(226, 232, 240, 0.9)';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-            aria-label="Next Review"
-          >
-            <ChevronRight size={22} />
-          </button>
         </div>
       </div>
 

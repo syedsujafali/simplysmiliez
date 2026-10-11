@@ -38,7 +38,7 @@ export default function MobileServicesSlider({ services = [] }) {
   if (!services || services.length === 0) return null;
 
   return (
-    <div className="mobile-services-slider-container">
+    <div className="mobile-services-slider-container" style={{ position: 'relative', width: '100%' }}>
       {/* Top Header & Navigation Controls */}
       <div style={{
         display: 'flex',
@@ -46,7 +46,7 @@ export default function MobileServicesSlider({ services = [] }) {
         justifyContent: 'space-between',
         gap: '12px',
         marginBottom: '18px',
-        padding: '0 2px'
+        padding: '0 4px'
       }}>
         <div style={{
           display: 'inline-flex',
@@ -111,14 +111,14 @@ export default function MobileServicesSlider({ services = [] }) {
         </div>
       </div>
 
-      {/* Swipeable Slider Window */}
+      {/* 3D Coverflow Stage with Peeked Neighbor Cards */}
       <div
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '100%',
           overflow: 'hidden',
-          borderRadius: '24px'
+          padding: '16px 0 24px 0',
+          perspective: '1200px'
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -128,23 +128,42 @@ export default function MobileServicesSlider({ services = [] }) {
           style={{
             display: 'flex',
             width: '100%',
-            transform: `translateX(-${currentIndex * 100}%)`,
-            transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
+            /* Each slide occupies 84% width. Offset by 8% so active slide is dead-centered and 8% left/right cards peek */
+            transform: `translateX(calc(8% - ${currentIndex * 84}%))`,
+            transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)'
           }}
         >
-          {services.map((service, idx) => (
-            <div
-              key={service.slug}
-              style={{
-                flex: '0 0 100%',
-                width: '100%',
-                maxWidth: '100%',
-                boxSizing: 'border-box'
-              }}
-            >
-              <ServiceCard service={service} index={idx} />
-            </div>
-          ))}
+          {services.map((service, idx) => {
+            const isCurrent = idx === currentIndex;
+            const isAdjacent = Math.abs(idx - currentIndex) === 1;
+
+            return (
+              <div
+                key={service.slug}
+                onClick={() => {
+                  if (!isCurrent) setCurrentIndex(idx);
+                }}
+                style={{
+                  flex: '0 0 84%',
+                  width: '84%',
+                  maxWidth: '84%',
+                  boxSizing: 'border-box',
+                  padding: '0 8px',
+                  /* 3D depth layer: Active card is full size and raised, side cards step back and dim */
+                  transform: isCurrent
+                    ? 'scale(1) translateZ(0)'
+                    : 'scale(0.91) translateY(8px)',
+                  opacity: isCurrent ? 1 : isAdjacent ? 0.72 : 0.4,
+                  zIndex: isCurrent ? 10 : 2,
+                  transition: 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+                  pointerEvents: isCurrent ? 'auto' : 'auto',
+                  cursor: isCurrent ? 'default' : 'pointer'
+                }}
+              >
+                <ServiceCard service={service} index={idx} />
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -153,27 +172,44 @@ export default function MobileServicesSlider({ services = [] }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '8px',
         marginTop: '20px'
       }}>
-        {services.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            aria-label={`Go to treatment ${idx + 1}`}
-            style={{
-              height: '8px',
-              width: idx === currentIndex ? '28px' : '8px',
-              borderRadius: '9999px',
-              backgroundColor: idx === currentIndex ? 'var(--primary)' : '#cbd5e1',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-              touchAction: 'manipulation'
-            }}
-          />
-        ))}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '6px 14px',
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: '9999px',
+          border: '1px solid rgba(255, 255, 255, 0.95)',
+          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(56, 189, 248, 0.25)'
+        }}>
+          {services.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to treatment ${idx + 1}`}
+              style={{
+                height: '9px',
+                width: idx === currentIndex ? '30px' : '9px',
+                borderRadius: '9999px',
+                background: idx === currentIndex
+                  ? 'linear-gradient(135deg, #0284c7 0%, #00b4d8 100%)'
+                  : '#94a3b8',
+                border: idx === currentIndex ? 'none' : '1px solid #64748b',
+                boxShadow: idx === currentIndex
+                  ? '0 2px 8px rgba(2, 132, 199, 0.5)'
+                  : 'none',
+                padding: 0,
+                cursor: 'pointer',
+                transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                touchAction: 'manipulation'
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

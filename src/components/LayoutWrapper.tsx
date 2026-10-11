@@ -27,7 +27,7 @@ export default function LayoutWrapper({ children }) {
     <UIContext.Provider value={{ openAppointment, openServices }}>
       <div className="has-mobile-bar" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <UnifiedHeader onOpenAppointment={openAppointment} />
-        <main style={{ flexGrow: 1 }}>
+        <main style={{ flexGrow: 1, paddingTop: 'var(--main-content-offset, 130px)' }}>
           {children}
         </main>
         <Footer />
