@@ -23,22 +23,37 @@ import { clinicInfo } from '@/data/clinicData';
 export default function DoctorCard({ doctor, onOpenAppointment }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isOrthodontist = doctor.speciality.toLowerCase().includes('orthodont');
+  const doctorPhoneDisplay = doctor.phone || (isOrthodontist ? '96033 38904' : '77993 76656');
+  const doctorPhoneWa = (doctor.phoneRaw ? doctor.phoneRaw.replace('+', '') : null) || (isOrthodontist ? '919603338904' : '917799376656');
 
-  // Handle escape key to close modal
+  // Robust scroll lock preventing background scrolling on desktop and iOS/Android mobile
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setIsModalOpen(false);
     };
+
     if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = 'unset';
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        const top = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        if (top) {
+          window.scrollTo(0, parseInt(top || '0') * -1);
+        }
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [isModalOpen]);
 
   const theme = isOrthodontist 
@@ -233,29 +248,11 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '18px 26px',
+              justifyContent: 'flex-end',
+              padding: '14px 22px',
               borderBottom: '1px solid #f1f5f9',
               backgroundColor: '#fafbfc'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{
-                  backgroundColor: theme.accentLight,
-                  color: theme.accentDark,
-                  padding: '4px 12px',
-                  borderRadius: '9999px',
-                  fontSize: '0.74rem',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em'
-                }}>
-                  Senior MDS Profile
-                </span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: '600' }}>
-                  Simply Smilez Dental Clinic
-                </span>
-              </div>
-
               <button
                 onClick={() => setIsModalOpen(false)}
                 style={{
@@ -310,26 +307,6 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                         objectPosition: 'top center'
                       }}
                     />
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '12px',
-                      left: '12px',
-                      right: '12px',
-                      backgroundColor: 'rgba(7, 21, 41, 0.88)',
-                      padding: '8px 12px',
-                      borderRadius: '10px',
-                      backdropFilter: 'blur(8px)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      color: '#ffffff',
-                      fontSize: '0.76rem',
-                      fontWeight: '700',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}>
-                      <ShieldCheck size={14} style={{ color: '#34d399' }} />
-                      <span>TSDC Reg: {doctor.regNumber}</span>
-                    </div>
                   </div>
 
                   {/* Trust Indicators */}
@@ -350,26 +327,6 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                         </div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                           Clinical Excellence
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      padding: '10px 14px',
-                      backgroundColor: '#f0fdf4',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 197, 94, 0.25)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px'
-                    }}>
-                      <Building2 size={16} style={{ color: '#16a34a', flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: '0.8rem', fontWeight: '800', color: '#166534' }}>
-                          {reachCount}
-                        </div>
-                        <div style={{ fontSize: '0.72rem', color: '#15803d' }}>
-                          Senior Consultant Network
                         </div>
                       </div>
                     </div>
@@ -396,21 +353,9 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                     fontSize: '0.96rem',
                     fontWeight: '700',
                     marginTop: '4px',
-                    marginBottom: '8px'
+                    marginBottom: '14px'
                   }}>
                     {doctor.degree}
-                  </div>
-
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.8rem',
-                    color: 'var(--text-muted)',
-                    marginBottom: '16px'
-                  }}>
-                    <GraduationCap size={15} style={{ color: 'var(--primary)' }} />
-                    <span>Alumni of {theme.alumni}</span>
                   </div>
 
                   {/* Bio */}
@@ -423,34 +368,13 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                     {doctor.bio}
                   </p>
 
-                  {/* Clinical Focus Chips */}
-                  <div style={{ marginBottom: '22px' }}>
-                    <div style={{
-                      fontSize: '0.74rem',
-                      fontWeight: '800',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                      color: 'var(--text-muted)',
-                      marginBottom: '8px'
-                    }}>
-                      Specialized Clinical Procedures:
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {theme.highlights.map((item, idx) => (
-                        <span key={idx} className="doctor-chip">
-                          <Check size={12} style={{ color: theme.accent, strokeWidth: 3 }} /> {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   {/* Direct Action Row */}
                   <div 
                     className="doctor-modal-actions"
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 1fr) auto',
-                      gap: '10px',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '12px',
                       marginTop: 'auto',
                       paddingTop: '18px',
                       borderTop: '1px solid #f1f5f9'
@@ -463,42 +387,46 @@ export default function DoctorCard({ doctor, onOpenAppointment }) {
                       }}
                       className="btn btn-primary"
                       style={{
-                        padding: '11px 16px',
-                        fontSize: '0.86rem',
+                        padding: '12px 18px',
+                        fontSize: '0.88rem',
                         fontWeight: '700',
                         justifyContent: 'center',
-                        borderRadius: '12px'
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
                       }}
                     >
-                      <Calendar size={15} /> Book Consultation
+                      <Calendar size={16} /> Book Consultation
                     </button>
 
-                    <Link
-                      href={`/doctor/${doctor.slug}`}
-                      className="btn btn-secondary"
-                      style={{
-                        padding: '11px 14px',
-                        fontSize: '0.84rem',
-                        fontWeight: '700',
-                        justifyContent: 'center',
-                        borderRadius: '12px'
-                      }}
-                    >
-                      Dedicated Page <ExternalLink size={13} />
-                    </Link>
-
                     <a
-                      href={`https://wa.me/917799376656?text=Hi%20Simply%20Smilez%2C%20I%20would%20like%20to%20consult%20with%20${encodeURIComponent(doctor.name)}.`}
+                      href={`https://wa.me/${doctorPhoneWa}?text=Hi%20Simply%20Smilez%2C%20I%20would%20like%20to%20consult%20with%20${encodeURIComponent(doctor.name)}.`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-whatsapp"
                       style={{
-                        padding: '11px 14px',
-                        borderRadius: '12px'
+                        padding: '12px 18px',
+                        borderRadius: '12px',
+                        fontSize: '0.88rem',
+                        fontWeight: '700',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        textDecoration: 'none',
+                        backgroundColor: '#25d366',
+                        color: '#ffffff',
+                        border: 'none',
+                        boxShadow: '0 4px 14px rgba(37, 211, 102, 0.35)'
                       }}
                       title={`Direct WhatsApp with ${doctor.name}`}
                     >
-                      <MessageSquare size={16} />
+                      {/* Official WhatsApp SVG Icon */}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.101-.476-.15-.677.15-.2.301-.777.978-.952 1.179-.176.2-.351.226-.652.075-1.392-.698-2.3-1.24-3.218-2.817-.24-.413.241-.383.69-1.28.075-.15.038-.276-.019-.376-.057-.1-.502-1.21-.688-1.658-.18-.436-.364-.376-.502-.383-.13-.007-.276-.007-.423-.007s-.383.055-.584.276c-.2.221-.777.76-.777 1.854 0 1.094.796 2.15 1.907 3.261 1.637 1.637 3.655 2.502 5.093 2.766 1.439.263 2.062.211 2.802.1.828-.124 1.78-.727 2.03-1.43.251-.703.251-1.306.176-1.43-.076-.126-.277-.201-.578-.352zM12.04 2C6.52 2 2.04 6.48 2.04 12c0 1.85.5 3.58 1.38 5.09L2 22l5.05-1.33A9.94 9.94 0 0 0 12.04 22c5.52 0 10-4.48 10-10s-4.48-10-10-10z"/>
+                      </svg>
+                      <span>{doctorPhoneDisplay}</span>
                     </a>
                   </div>
 

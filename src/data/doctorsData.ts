@@ -14,7 +14,9 @@ export const doctorsData = [
     clinicsCount: "30+ Consulting Clinics",
     qualification: "MDS - Pediatric & Preventive Dentistry, BDS",
     regNumber: "A-9701 (Telangana State Dental Council)",
-    bio: "Dr. Susheel Kumar is a Pediatric Dentist and Implantologist in Hyderabad with 9 years of experience in dentistry. He practices at Simply Smilez Dental Clinic, Manikonda / Shaikpet, Hyderabad, and also works as a consultant across 30 clinics in Hyderabad.",
+    phone: "77993 76656",
+    phoneRaw: "+917799376656",
+    bio: "Dr. Susheel Kumar is a dedicated Pediatric Dentist and Implantologist in Hyderabad with 9 years of clinical experience, specializing in gentle, child-friendly dentistry and advanced implant care.",
     aboutLong: [
       "Dr. Susheel Kumar is dedicated to providing gentle, compassionate, and child-friendly dental care for infants, children, and teenagers, as well as advanced implant restorations for adults.",
       "His clinical expertise includes preventive dentistry, painless pediatric root canals (pulpectomy), zirconia & stainless steel pediatric crowns, dental trauma management, habit breaking appliances, and comprehensive dental implants.",
@@ -88,7 +90,9 @@ export const doctorsData = [
     clinicsCount: "20+ Consulting Clinics",
     qualification: "MDS - Orthodontics & Dentofacial Orthopedics, BDS",
     regNumber: "A-9700 (Telangana State Dental Council)",
-    bio: "Dr. Ankush Kumar is an Orthodontist and Invisalign Provider in Hyderabad with 9 years of experience in orthodontic and dental care. He practices at Simply Smilez Dental Clinic in Shaikpet / Manikonda, Hyderabad, and also works as a consultant at 20 clinics across the city.",
+    phone: "96033 38904",
+    phoneRaw: "+919603338904",
+    bio: "Dr. Ankush Kumar is a certified Orthodontist and Invisalign Provider in Hyderabad with 9 years of clinical experience, specializing in advanced digital orthodontic smile transformations and modern clear aligners.",
     aboutLong: [
       "Dr. Ankush Kumar specializes in orthodontic diagnosis, braces treatment and clear aligner therapies (Invisalign) for children, teenagers and adults.",
       "His clinical focus is on correcting misaligned teeth, crowding, gaps, open bite, overbite, crossbite, and complex skeletal malocclusions using modern digital orthodontic planning.",

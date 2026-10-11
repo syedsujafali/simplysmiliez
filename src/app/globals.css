@@ -1029,6 +1029,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overscroll-behavior: contain;
   animation: docModalFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -1044,6 +1045,8 @@ button, input, select, textarea {
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 30px 70px -15px rgba(15, 23, 42, 0.35);
   border: 1px solid rgba(226, 232, 240, 0.95);
   position: relative;
